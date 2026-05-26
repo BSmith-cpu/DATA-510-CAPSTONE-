@@ -20,7 +20,7 @@ We want to build a reproductive model that ranks U.S. metros by affordability ri
 
 ## Mission
 
-The mission is to predict which afforable U.S. mid-sized cities are next to tip into a housing crisis and pricing out the middle class. 
+This project aims to develop a portfolio optimization framework that balances projected gains with drawdown resistance. By testing student-constructed portfolios across historical market crises, the project will evaluate which asset allocations, sectors, and diversification strategies produce stronger risk-adjusted performance. The broader goal is to help students make more disciplined investment decisions by understanding not only how portfolios grow in normal markets, but also how they survive during financial uncertainty.
 
 ## Context
 
