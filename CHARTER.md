@@ -2,30 +2,32 @@
 
 > Filled in live during the **Studio Charter** session in week 3. Every section below is committed in the same commit at the end of that class block. See [Studio Charter (single-session inception)](https://courses.lpcordova.phd/data510/project-framework/charter-inception.html) for the script and time-boxes.
 
-**Owner team:** <names>
-**Owner Product Lead:** <name>
-**Peer Stakeholder POs:** <names of your 2 or 3 peer PO individuals>
-**Instructor / Sponsor:** Lucas Cordova (`LucasCordova` on GitHub)
-**GitHub repo:** <link to this repo>
-**GitHub Projects board:** <link>
-**Discord category:** `#<project>-*`
-**Studio Session:** <1, 2, or 3>
-**Studio formed:** <date>
+* **Owner team:** Brandon Smith
+* **Owner Product Lead:** Brandon Smith
+* **Peer Stakeholder POs:** Manish Reddy Kallu, Alex Jackson, Jackson Garro
+* **Instructor / Sponsor:** Lucas Cordova (`LucasCordova` on GitHub)
+* **GitHub repo:** [<link to this repo>](https://github.com/BSmith-cpu/DATA-510-CAPSTONE-)
+* **GitHub Projects board:** [<link>](https://github.com/users/BSmith-cpu/projects/4)
+* **Discord category:** `#<project>-*`
+* **Studio Session:** 1
+* **Studio formed:** 5/25/2026
 
 ## Vision
 
-One or two sentences. The world (or organization, or domain) if this project succeeds.
+
+We want to build a reproductive model that ranks U.S. metros by affordability risk using publicly available federal data sources. When the project succeeds, the majority of middle-class Americans will be able to identify cities they should avoid based on key indicators of prior cities that have priced out the middle class. 
+
 
 ## Mission
 
-One or two sentences. What the owner team will actually do this semester.
+The mission is to predict which afforable U.S. mid-sized cities are next to tip into a housing crisis and pricing out the middle class. 
 
 ## Context
 
-- **Users / affected parties:** who benefits, who is at risk, who might use the result.
-- **Data sources (proposed):** named sources, access status, license / ethics notes.
-- **Constraints:** time, compute, access, skills, scope.
-- **Ethics risks:** consent, retention, PII, fairness, deployment risk.
+- **Users / affected parties:** **Who Benefits** city/county housing departments, mortgage lenders, state housing financial planner | **Who is at Risk**: working/middle class who are either renting/in process of buying | **Who might use the results** Real Estate agents trying identify an emerging markets. 
+- **Data sources (proposed):** Zillow Research, Free/Public Download, NO PII | FHAH Housing Price Index, Free/public API key, U.S. government open data | Census ACS, Free via Census API, Public Domain | FRED (Federal Reserves), Free API, Open/No Restrictions | Census Population Estimates, Free/Public Download, Public Domain
+- **Constraints:** **Time**: I only have 1 semesmeter (~15 weeks) which limits the amount of metro cities can be modelded | **Scope**: Limited to metros with sufficent historic data (2000 to present); this excluded rural/smaller cities. | **Access**: Even though most of the data was able to be downloaded locally, there are rate limiters on the API keys. 
+- **Ethics risks:** **PII/Consent**: All of the data is public, aggregate, and anonymized at the metro level | **Fairness**: The model might to try to flag lower-income or majority middle-class cities, this might be something that we have to address. 
 
 ## Success criteria by milestone
 
