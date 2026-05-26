@@ -6,12 +6,12 @@
 
 | Field | Value |
 |-------|-------|
-| Owner team | <names> |
-| Owner Product Lead | <name> |
-| Peer Stakeholder POs | <names of your 2 or 3 peer PO individuals> |
-| Studio Session | <1, 2, or 3> |
-| GitHub repo | <link to this repo> |
-| GitHub Projects board | <link> |
+| Owner team | <Brandon Smith> |
+| Owner Product Lead | <Brandon Smith> |
+| Peer Stakeholder POs | <Manish Reddy Kallu, Alex Jackson, Jackson Garro> |
+| Studio Session | <1> |
+| GitHub repo | <(https://github.com/BSmith-cpu/DATA-510-CAPSTONE-)> |
+| GitHub Projects board | <[link](https://github.com/users/BSmith-cpu/projects/4)> |
 | Discord category | `#<project>-*` |
 | Instructor / Sponsor | Lucas Cordova (`LucasCordova` on GitHub) |
 
