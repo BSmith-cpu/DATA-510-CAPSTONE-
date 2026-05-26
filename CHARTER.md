@@ -31,17 +31,17 @@ The mission is to predict which afforable U.S. mid-sized cities are next to tip 
 
 ## Success criteria by milestone
 
-- **M1, proposal (W4):** <measurable criterion>
-- **M2, data summary (W7):** <measurable criterion>
-- **M3, poster rough draft (W10):** <measurable criterion>
-- **M4, write-up rough draft (W12):** <measurable criterion>
-- **M5, final write-up and poster (W14):** <measurable criterion>
+- **M1, proposal (W4):** All 5 data sources accessed and a SQL schema drafted with CBSA as primary key
+- **M2, data summary (W7):** A joined, clean panel dataset existing more than 75 metros with EDA complete.  
+- **M3, poster rough draft (W10):** A baseline model is trained and a rough draft poster exists for prelimiary results. 
+- **M4, write-up rough draft (W12):** Final model is tuned, SHAP values computed, and a full draft write-up is complete. 
+- **M5, final write-up and poster (W14):** Polished write-up, working dashboard, and public GITHUB repo are all submitted. 
 
-## Working agreements (internal to owner team)
+## Working agreements (internal to owner team) - SOLO
 
-- **Sync rhythm:** <e.g., one async standup per weekday in `#<project>-standup`>
-- **Code review:** <who reviews what, by when>
-- **Decision rule:** <how the team decides when it disagrees>
+- **Sync rhythm:** Monday standup, to review what needs to be done by EOW (end of week); this just keeps myself accountable. 
+- **Code review:** I will be writing the code, let it run, wait 24 hours/let another classmate/peer stakeholder review it before pushing it. 
+- **Decision rule:** Solo project, but if I have confliciting opinons consult others opinon/judgement. 
 
 ## Working agreements (triad with peer POs)
 
