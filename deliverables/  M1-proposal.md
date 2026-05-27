@@ -27,8 +27,9 @@
 
 ## Data Source and Access Plan
 ### **Zillow Research**
-- Free/Public Downloaded to Local Host
-- There is no ethical issues, all PII information is removed
+- The data was found at  *https://www.zillow.com/research/data/*. From there we moved towards the most recent file which contained house values. There are multiple options for house values, but we decided to stick with the first option being *Home Values - ZHVI All Homes - Metro & U.S.*. The data is updated on the 16th of each month, so I will be downloading the new file at least twice throughout the project timespan. This asssures that all information is up to date and the models are predicting the most recent data.
+- ZHVI stands for Zilow Home Value Index. This is the measure of the typical home value and market changes across a given region and housing type. - Zillow.com
+- There is no ethical issues, all PII information is removed.
 
 ### ***FHAH Housing Price Index**
 - Free/public API key, U.S. government open data 
