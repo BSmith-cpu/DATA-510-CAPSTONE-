@@ -20,4 +20,5 @@ zillow_long['Date'] = pd.to_datetime(zillow_long['Date'])
 
 
 print(zillow_long.head())
-print(zillow_long.columns.tolist())
+print(zillow_long.columns.tolist()) # by flipping it to long format, we were able to have 7 columns - RegionID, SizeRank, RegionName, RegionType, StateName, Date, and 
+
