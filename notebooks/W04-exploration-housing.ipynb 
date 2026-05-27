@@ -1,2 +1,23 @@
 import pandas as pd
 import numpy as np
+
+zillow_data = pd.read_csv("/Users/brandonsmith/DATA-510-CAPSTONE-/DATA-510-CAPSTONE-/data/Metro_zhvi_uc_sfrcondo_tier_0.33_0.67_sm_sa_month.csv")
+hpi_at_metro = pd.read_csv("/Users/brandonsmith/DATA-510-CAPSTONE-/DATA-510-CAPSTONE-/data/hpi_at_metro.csv")
+cbsa_2025 = pd.read_csv("/Users/brandonsmith/DATA-510-CAPSTONE-/DATA-510-CAPSTONE-/data/cbsa-est2025-alldata.csv", encoding='iso-8859-1')
+cbsa_2019 = pd.read_csv("/Users/brandonsmith/DATA-510-CAPSTONE-/DATA-510-CAPSTONE-/data/cbsa-est2019-alldata.csv", encoding='iso-8859-1')
+
+print(zillow_data.head())
+print(zillow_data.columns.tolist()) # this was the main issue even before doing the EDA, just looking up the raw csv file. we saw they were counting the years/data inputs through the columns which is an issue. the next step will be to flip the data into long format.
+print(zillow_data.dtypes)
+
+
+# We are needing to reshape the zillow_data to a long format
+dates_cols = [c for c in zillow_data.columns if not pd.isna(pd.to_datetime(c, errors='coerce'))]
+id_cols = [c for c in zillow_data.columns if c not in dates_cols]
+
+zillow_long = zillow_data.melt(id_vars = id_cols, value_vars = dates_cols, var_name = 'Date', value_name = 'Value')
+zillow_long['Date'] = pd.to_datetime(zillow_long['Date'])
+
+
+print(zillow_long.head())
+print(zillow_long.columns.tolist())
