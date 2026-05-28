@@ -1,4 +1,4 @@
-# Proposal
+# Milestone 1 - Proposal
 
 ## Priced Out: Predicting the Next U.S. Housing Crisis
 - **Author**: Brandon Smith
