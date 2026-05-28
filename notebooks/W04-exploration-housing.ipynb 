@@ -3,6 +3,7 @@ from altair import value
 from numpy import long
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 import seaborn as sns
 import scipy.stats as stats
 
@@ -89,8 +90,61 @@ plt.xlabel('Region', fontsize=12)
 plt.ylabel('Price ($)', fontsize=12)
 plt.xticks(rotation=45, ha='right')
 plt.tight_layout()
-plt.show()
+#plt.show()
 #plt.savefig('/Users/brandonsmith/DATA-510-CAPSTONE-/DATA-510-CAPSTONE-/data/zillow_plots/boxplot_by_state.png', dpi=100, bbox_inches='tight')
 
 # House Price Index at Metro Level
+# They are missing column headers so we are adding those in 
+hpi_at_metro.columns = ['Metro', 'Area Code', 'Year', 'Quarter', 'Value', 'Difference']
+hpi_at_metro.to_csv('/Users/brandonsmith/DATA-510-CAPSTONE-/DATA-510-CAPSTONE-/data/hpi_at_metro.csv', index=False)
+# Loading the file back in
+hpi_at_metro = pd.read_csv('/Users/brandonsmith/DATA-510-CAPSTONE-/DATA-510-CAPSTONE-/data/hpi_at_metro.csv')
 
+
+# Isolating our Training Cities
+training_cities = hpi_at_metro[hpi_at_metro['Metro'].isin(['Boise City, ID', 'Tampa, FL (MSAD)', '"Austin-Round Rock-San Marcos, TX'])]
+print(training_cities.head())
+print(training_cities.dtypes)
+
+# Value and Difference are strings 
+
+#hpi_at_metro['Value'] = hpi_at_metro['Value'].str.replace('$', '').str.replace(',', '').astype(float)
+#hpi_at_metro['Difference'] = hpi_at_metro['Difference'].str.replace('$', '').str.replace(',', '').astype(float)
+
+#Tried the conversion with the code above, it failed since instead of having NANs or 0s they decided to use dashes("-"), we can run a simple replace function that replaces the dash with a 0, making the strip and replace easier
+
+hpi_at_metro['Value'] = hpi_at_metro['Value'].str.replace('-', '0').str.replace('$', '').str.replace(',', '').astype(float)
+hpi_at_metro['Difference'] = hpi_at_metro['Difference'].str.replace('-', '0').str.replace('(', '').str.replace(')', '').str.replace('$', '').str.replace(',', '').str.strip().astype(float)
+
+
+# Missing Values Heatmap
+plt.figure(figsize=(14, 6))
+sns.heatmap(hpi_at_metro.isnull(), cbar=False, cmap='viridis')
+plt.title('Missing Values Heatmap')
+plt.xlabel('Date')
+plt.ylabel('Region')
+plt.tight_layout()
+#plt.show()
+#plt.savefig('/Users/brandonsmith/DATA-510-CAPSTONE-/DATA-510-CAPSTONE-/data/hpi_at_metro_plots/missing_values_heatmap.png', dpi=100, bbox_inches='tight')
+
+
+# Time Series Showing All Cities Growth
+plt.figure(figsize=(12, 5))
+
+# Plot each training city separately
+for city in ['Boise City, ID', 'Tampa, FL (MSAD)', 'Austin-Round Rock-San Marcos, TX']:
+    city_data = hpi_at_metro[hpi_at_metro['Metro'] == city]
+    # Sort by Year and Quarter to ensure proper line plotting
+    city_data = city_data.sort_values(['Year', 'Quarter'])
+    plt.plot(city_data['Year'], city_data['Value'], marker='o', label=city, linewidth=2)
+
+plt.title('HPI  over Time by Training City')
+plt.xlabel('Year')
+plt.ylabel('HPI Value')
+plt.legend()
+plt.grid(True, alpha=0.3)
+ax = plt.gca()
+ax.yaxis.set_major_locator(MaxNLocator(nbins=10))
+plt.tight_layout()
+#plt.show()
+#plt.savefig('/Users/brandonsmith/DATA-510-CAPSTONE-/DATA-510-CAPSTONE-/data/hpi_at_metro_plots/hpi_over_time_by_city.png', dpi=100, bbox_inches='tight')
