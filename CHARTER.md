@@ -6,8 +6,8 @@
 * **Owner Product Lead:** Brandon Smith
 * **Peer Stakeholder POs:** Manish Reddy Kallu, Alex Jackson, Jackson Garro
 * **Instructor / Sponsor:** Lucas Cordova (`LucasCordova` on GitHub)
-* **GitHub repo:** [<link to this repo>](https://github.com/BSmith-cpu/DATA-510-CAPSTONE-)
-* **GitHub Projects board:** [<link>](https://github.com/users/BSmith-cpu/projects/4)
+* **GitHub repo:** (https://github.com/BSmith-cpu/DATA-510-CAPSTONE-)
+* **GitHub Projects board:** (https://github.com/users/BSmith-cpu/projects/4)
 * **Discord category:** `#<project>-*`
 * **Studio Session:** 1
 * **Studio formed:** 5/25/2026
