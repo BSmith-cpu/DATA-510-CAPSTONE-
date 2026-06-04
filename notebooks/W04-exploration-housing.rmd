@@ -1,0 +1,18 @@
+library(tidyverse)
+library(ggplot2)
+library(lubridate)
+library(scales)
+library(janitor)
+
+```{r}
+zhvi = read.csv("/Users/brandonsmith/DATA-510-CAPSTONE--1/data/Metro_zhvi_uc_sfrcondo_tier_0.33_0.67_sm_sa_month.csv")
+
+hpi_at = read.csv("/Users/brandonsmith/DATA-510-CAPSTONE--1/data/hpi_at_metro.csv")
+
+hpi_po = read.csv("/Users/brandonsmith/DATA-510-CAPSTONE--1/data/hpi_po_metro.csv")
+```
+
+```{r}
+
+
+```
