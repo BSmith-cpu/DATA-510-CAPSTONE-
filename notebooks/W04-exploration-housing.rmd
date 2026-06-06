@@ -1,18 +1,63 @@
+---
+title: "EDA on Housing Data"
+output: html_document
+---
+
+Loading in Basic Libraries
+```{r}
 library(tidyverse)
 library(ggplot2)
 library(lubridate)
 library(scales)
 library(janitor)
-
-```{r}
-zhvi = read.csv("/Users/brandonsmith/DATA-510-CAPSTONE--1/data/Metro_zhvi_uc_sfrcondo_tier_0.33_0.67_sm_sa_month.csv")
-
-hpi_at = read.csv("/Users/brandonsmith/DATA-510-CAPSTONE--1/data/hpi_at_metro.csv")
-
-hpi_po = read.csv("/Users/brandonsmith/DATA-510-CAPSTONE--1/data/hpi_po_metro.csv")
+library(kableExtra)
 ```
 
+Loading in Datasets
+```{r}
+zhvi = read.csv("/Users/brandonsmith/DATA-510-CAPSTONE--1/data/Metro_zhvi_uc_sfrcondo_tier_0.33_0.67_sm_sa_month.csv") # nolint
+
+hpi_at = read.csv("/Users/brandonsmith/DATA-510-CAPSTONE--1/data/hpi_at_metro.csv") # nolint
+
+hpi_po = read.csv("/Users/brandonsmith/DATA-510-CAPSTONE--1/data/hpi_po_metro.csv") # nolint
+```
+
+General Summary of the Datasets
+```{r}
+glimpse(zhvi)
+glimpse(hpi_at)
+glimpse(hpi_po)
+```
+Both the All Transaction and Purchase Only look ok, there are some basic things i might need to go in and change like headers, and removing empty rows
+
+We have an issue when the ZHVI dataset. They decided to put the dates as columns making this a bit harder to analysis and to create a proper EDA. I will be converting this into a long formatted table through R library functions.
+
+Wide to Long Format Conversion
+```{r}
+zhvi_long <- zhvi %>%
+  pivot_longer(
+    cols = starts_with("X"),  # Select all date columns (they start with X due to CSV import)
+    names_to = "date",
+    values_to = "zhvi_value"
+  ) %>%
+  mutate(
+    date = str_remove(date, "^X"),  # Remove the leading X
+    date = str_replace_all(date, "\\.", "-"),  # Replace dots with hyphens
+    date = as.Date(date)  # Convert to Date format
+  )
+```
+
+We are converted the ZHVI dataset from wide to long format, which will make it easier to work with for analysis and visualization.
+
+```{r}
+glimpse(zhvi_long)
+```
+
+Now that the table looks better, we are going to move ahead to the EDA. 
+
 ```{r}
 
 
+
 ```
+
