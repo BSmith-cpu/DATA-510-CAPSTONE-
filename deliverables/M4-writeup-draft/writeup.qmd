@@ -1,6 +1,6 @@
 ---
 title: "Capstone Project Write-Up"
-subtitle: "Replace with your project title"
+subtitle: "Priced Out: Predicting the Next U.S. Housing Crisis"
 author:
   - "Brandon Smith"
 date: today
@@ -32,13 +32,13 @@ execute:
 
 # Title, Team, and Affiliations
 
-**Project title:** *(same as charter)*
+**Project title:** *Priced Out: Predicting the Next U.S. Housing Crisis*
 
 | Name | Role | Willamette email |
 |------|------|------------------|
 | Brandon Smith | Owner Product Lead | bwsmith2@willamette.edu |
 
-**Peer Stakeholder POs:** *(from lookup)*
+**Peer Stakeholder POs:** *Manish Reddy Kallu | Alexander Jackson | Jackson Garro*
 
 **Repository:** `https://github.com/BSmith-cpu/DATA-510-CAPSTONE-`
 
@@ -52,11 +52,20 @@ execute:
 
 **Problem statement:**
 
+- Many U.S. metro cities are dealing with the issue of forcing out the middle class. This is a combination of many factors (house values, median income, etc). We are looking at cities already affected by this (Boise, Austin, Tampa) and will use them as training cities to see whether we can identify predictors from that vast data source. 
+
 **Primary research question:**
+
+- Which combination of housing affordability and demographic indicators best predict declines in the share of middle-income households in U.S. metro areas, and how do these predictors appear in Boise City, Idaho, Austin, Texas, and Tampa, Florida between 1975 and 2025 (50 year time span). 
 
 **Secondary questions (if any):**
 
+- TBD
+
 **Changes since M1 proposal:** *(none yet, or explain pivot)*
+
+- None (06/08/2026)
+- 
 
 # Impact and Stakeholders
 
