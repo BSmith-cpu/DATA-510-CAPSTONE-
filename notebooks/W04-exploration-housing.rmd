@@ -56,8 +56,20 @@ glimpse(zhvi_long)
 Now that the table looks better, we are going to move ahead to the EDA. 
 
 ```{r}
-
-
-
+ggplot(
+  zhvi_train,
+  aes(x = as.Date(as.yearqtr(paste(yr, qtr), format = "%Y %q")),
+      y = zhvi_qtr,
+      color = metro_label)
+) +
+  geom_line(linewidth = 1.1) +
+  scale_y_continuous(labels = label_dollar()) +
+  labs(
+    title = "Quarterly Zillow Home Values in Training Metros",
+    subtitle = "Austin, Boise, and Tampa",
+    x = NULL,
+    y = "Average quarterly ZHVI",
+    color = NULL
+  )
 ```
 
