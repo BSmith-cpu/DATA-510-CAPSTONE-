@@ -94,6 +94,7 @@ glimpse(zhvi_train)
 ```
 
 ```{r}
+# This plot visualizes the quarter over quarter change in House Value from the selected training cities
 ggplot(zhvi_train, aes(x = as.Date(as.yearqtr(paste(yr, qtr, sep = " Q"), format = "%Y Q%q")),
                       y = zhvi_qtr,
                       color = RegionName)) +
@@ -109,15 +110,16 @@ ggplot(zhvi_train, aes(x = as.Date(as.yearqtr(paste(yr, qtr, sep = " Q"), format
 ```
 
 ```{r}
+# This plot visualizes the year-over-year (YoY) growth in home values for selected training metros (Austin, Boise, and Tampa) using quarterly Zillow ZHVI data.
 ggplot(
-  aes(x = as.Date(as.yearqtr(paste(yr, qtr, sep = " Q"), format = "%Y Q%q")),
-  aes(x = as.Date(as.yearqtr(paste(yr, qtr, sep = " Q"), format = "%Y Q%q")),
+  zhvi_train,
+  aes(x = as.Date(as.yearqtr(yr + (qtr - 1)/4)),
       y = zhvi_yoy,
-      color = metro_label)
+      color = RegionName)
 ) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
   geom_line(linewidth = 1.1, na.rm = TRUE) +
-  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 0.1)) +
   labs(
     title = "Year-over-Year Home Value Growth",
     subtitle = "Training metros using quarterly Zillow ZHVI",
@@ -126,3 +128,4 @@ ggplot(
     color = NULL
   )
 ```
+
