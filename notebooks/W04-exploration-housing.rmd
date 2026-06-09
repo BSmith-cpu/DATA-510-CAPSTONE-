@@ -11,6 +11,7 @@ library(lubridate)
 library(scales)
 library(janitor)
 library(kableExtra)
+library(zoo)
 ```
 
 Loading in Datasets
@@ -56,12 +57,46 @@ glimpse(zhvi_long)
 Now that the table looks better, we are going to move ahead to the EDA. 
 
 ```{r}
-ggplot(
-  zhvi_train,
-  aes(x = as.Date(as.yearqtr(paste(yr, qtr), format = "%Y %q")),
-      y = zhvi_qtr,
-      color = metro_label)
-) +
+zhvi_qtr <- zhvi_long |>
+  mutate(
+    yr = year(date),
+    qtr = quarter(date)
+  ) |>
+  group_by(RegionID, RegionName,RegionType, StateName, yr, qtr) |>
+  summarise(zhvi_qtr = mean(zhvi_value, na.rm = TRUE), .groups = "drop") |>
+  arrange(RegionID, yr, qtr) |>
+  group_by(RegionID) |>
+  mutate(
+    zhvi_yoy = zhvi_qtr / lag(zhvi_qtr, 4) - 1,
+    zhvi_qoq = zhvi_qtr / lag(zhvi_qtr, 1) - 1
+  ) |>
+  ungroup()
+```
+
+
+```{r}
+glimpse(zhvi_qtr)
+```
+
+```{r}
+zhvi_train <- zhvi_qtr %>%
+  filter(
+    str_detect(
+      RegionName,
+      regex("Austin, TX|Boise City, ID|Tampa, FL", ignore_case = TRUE)
+    )
+  ) %>%
+  mutate(metro_label = RegionName)
+```
+
+```{r}
+glimpse(zhvi_train)
+```
+
+```{r}
+ggplot(zhvi_train, aes(x = as.Date(as.yearqtr(paste(yr, qtr, sep = " Q"), format = "%Y Q%q")),
+                      y = zhvi_qtr,
+                      color = RegionName)) +
   geom_line(linewidth = 1.1) +
   scale_y_continuous(labels = label_dollar()) +
   labs(
@@ -73,3 +108,21 @@ ggplot(
   )
 ```
 
+```{r}
+ggplot(
+  aes(x = as.Date(as.yearqtr(paste(yr, qtr, sep = " Q"), format = "%Y Q%q")),
+  aes(x = as.Date(as.yearqtr(paste(yr, qtr, sep = " Q"), format = "%Y Q%q")),
+      y = zhvi_yoy,
+      color = metro_label)
+) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
+  geom_line(linewidth = 1.1, na.rm = TRUE) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  labs(
+    title = "Year-over-Year Home Value Growth",
+    subtitle = "Training metros using quarterly Zillow ZHVI",
+    x = NULL,
+    y = "YoY growth",
+    color = NULL
+  )
+```
