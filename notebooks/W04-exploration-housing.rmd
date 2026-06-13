@@ -5,6 +5,7 @@ output: html_document
 
 Loading in Basic Libraries
 ```{r}
+# Core data manipulation libraries, visualization libraries, and others
 library(tidyverse)
 library(ggplot2)
 library(lubridate)
@@ -15,12 +16,29 @@ library(zoo)
 ```
 
 Loading in Datasets
+We are loading in three core datasets that form the foundation of this analysis: 
+* Zillow Home Value Index (ZHVI)
+* Home Price Index (HPI) - Purchase Only
+* Home Price Index (HPI) - All Transactions
 ```{r}
 zhvi = read.csv("/Users/brandonsmith/DATA-510-CAPSTONE--1/data/Metro_zhvi_uc_sfrcondo_tier_0.33_0.67_sm_sa_month.csv") # nolint
 
-hpi_at = read.csv("/Users/brandonsmith/DATA-510-CAPSTONE--1/data/hpi_at_metro.csv") # nolint
+hpi_po <- read.csv(
+  "/Users/brandonsmith/DATA-510-CAPSTONE--2/data/hpi_po_metro.csv"
+)
 
-hpi_po = read.csv("/Users/brandonsmith/DATA-510-CAPSTONE--1/data/hpi_po_metro.csv") # nolint
+hpi_at <- read.csv(
+  "/Users/brandonsmith/DATA-510-CAPSTONE--2/data/hpi_at_metro.csv",
+  header    = FALSE,
+  col.names = c("metro_name", "cbsa", "yr", "qtr", "index_nsa", "index_sa")
+) %>%
+  mutate(
+    index_nsa = as.numeric(str_remove_all(as.character(index_nsa), "[()\\s]")),
+    index_sa  = as.numeric(str_remove_all(as.character(index_sa),  "[()\\s]"))
+  )
+
+glimpse(hpi_po)
+glimpse(hpi_at)
 ```
 
 General Summary of the Datasets
@@ -34,10 +52,15 @@ Both the All Transaction and Purchase Only look ok, there are some basic things 
 We have an issue when the ZHVI dataset. They decided to put the dates as columns making this a bit harder to analysis and to create a proper EDA. I will be converting this into a long formatted table through R library functions.
 
 Wide to Long Format Conversion
+
+The ZHVI dataset stores each month as its own column, which is not suitable for time series analysis or joining with other datasets. 
+We reshape it to long format so each row represents one metro-month observation. 
+The leading 'X' and dots in column names are artifacts of how R imports CSV headers.
+
 ```{r}
 zhvi_long <- zhvi %>%
   pivot_longer(
-    cols = starts_with("X"),  # Select all date columns (they start with X due to CSV import)
+    cols = starts_with("X"),  # Select all date columns 
     names_to = "date",
     values_to = "zhvi_value"
   ) %>%
@@ -56,6 +79,13 @@ glimpse(zhvi_long)
 
 Now that the table looks better, we are going to move ahead to the EDA. 
 
+
+Quarter Agg of ZHVI
+
+Since HPI data is quarterly, we want to aggregate the ZHVI from monthly to quarterly by taking the mean of the three months within each quarter.
+We also want to compute two growth metrics:
+* zhvi_yoy - year over year
+* zhvi_qoq - quarter over quarter
 ```{r}
 zhvi_qtr <- zhvi_long |>
   mutate(
@@ -78,6 +108,9 @@ zhvi_qtr <- zhvi_long |>
 glimpse(zhvi_qtr)
 ```
 
+Training Cities
+
+We are isolating the three training cities - Austin, Boise, and Tampa. The model will learn the pre-collapse signture of these cities.
 ```{r}
 zhvi_train <- zhvi_qtr %>%
   filter(
@@ -93,6 +126,8 @@ zhvi_train <- zhvi_qtr %>%
 glimpse(zhvi_train)
 ```
 
+visualization: 
+This plot shows the absolute ZHVI level over time for the training cities.
 ```{r}
 # This plot visualizes the quarter over quarter change in House Value from the selected training cities
 ggplot(zhvi_train, aes(x = as.Date(as.yearqtr(paste(yr, qtr, sep = " Q"), format = "%Y Q%q")),
@@ -108,6 +143,8 @@ ggplot(zhvi_train, aes(x = as.Date(as.yearqtr(paste(yr, qtr, sep = " Q"), format
     color = NULL
   )
 ```
+
+This plot shows the rate of change rather than the absolute level. The 2020 - 2022 surge for cities like Boise and Austin having a YoY of 20-30%. 
 
 ```{r}
 # This plot visualizes the year-over-year (YoY) growth in home values for selected training metros (Austin, Boise, and Tampa) using quarterly Zillow ZHVI data.
@@ -129,8 +166,23 @@ ggplot(
   )
 ```
 
+Cleaning the HPI datasets
+
+We are standardizing the column names and types across HPI files to prepare to join them.
+```{r}
+hpi_po_clean <- hpi_po%>%
+  select(cbsa, metro_name, year = yr, qtr, hpi_po_sa = index_sa) %>%
+  rename(year = yr)
+
+hpi_at_clean <- hpi_at %>%
+  select(cbsa, metro_name, year = yr, qtr, hpi_at_sa = index_sa)
+```
+
 Now we are going to be working with CBSA codes to look at specific cities along side the training cities
 
+Loading in Census Population Estimates
+
+We loaded in two census beurea CBSA population estimate files covering from 2010 to 2019 and 2020 to 2025. 
 ```{r}
 pop_2019 <- read_csv("/Users/brandonsmith/DATA-510-CAPSTONE--2/data/cbsa-est2019-alldata.csv", show_col_types = FALSE) # nolint
 pop_2025 <- read_csv("/Users/brandonsmith/DATA-510-CAPSTONE--2/data/cbsa-est2025-alldata.csv", show_col_types = FALSE) # nolint
@@ -141,6 +193,9 @@ glimpse(pop_2019)
 glimpse(pop_2025)
 ```
 
+Cleaning the population data: 
+
+the 'clean_pop' function filter to Metropolitation Statisical Areas only (dropping metro division and micropolitan areas). The two files are stacked and deduplicated on CBSA + year
 ```{r}
 clean_pop <- function(df) {
   df %>%
@@ -156,7 +211,7 @@ clean_pop <- function(df) {
     filter(!is.na(year))                                         
 }
 
-pop_long <- bind_rows(test_2019, test_2025) %>%
+pop_long <- bind_rows(clean_pop(pop_2019), clean_pop(pop_2025)) %>%
   distinct(cbsa, year, .keep_all = TRUE) %>%
   arrange(cbsa, year)
 
@@ -165,6 +220,13 @@ pop_long <- bind_rows(test_2019, test_2025) %>%
 ```{r}
 glimpse(pop_long)
 ```
+
+Engineering Features: 
+
+From the annual population series, we will have three main features:
+* pop_yoy_growth - year over year growth rate
+* pop_velocity_3yr - 3 year velocity (current population compared to 3 years ago)
+* pop_accleration - change in growth rate
 
 ```{r}
 pop_features <- pop_long %>%
@@ -180,6 +242,10 @@ pop_features <- pop_long %>%
 glimpse(pop_features)
 ```
 
+CBSA and ZHVI crosswalk:
+
+Zillow's file uses free-text metro names rather than CBSA codes. We will build a lookup table by matching on the city name portion (before the first comma) from both the Census metro names and Zillow RegionName. 
+
 ```{r}
 cbsa_crosswalk <- pop_long %>%
   select(cbsa, census_name = metro_name) %>%
@@ -191,14 +257,73 @@ zhvi_cbsa_lookup <- zhvi_long %>%
   distinct() %>%
   mutate(name_short = str_remove(RegionName, ",.*$")) # Remove state information for easier matching
 
-message('ZHVI metros matched to CBSA:', nrow(zhvi_cbsa_lookup)," / ", n_distinct(zhvi_long$RegionName))
+message('ZHVI metros matched to CBSA:', nrow(zhvi_cbsa_lookup)," / ", n_distinct(zhvi_long$RegionName)) # 895/895
 ```
 
-895/895
+Four-Source Panel Join:
+
+This took us forever - we are combining all four data sources into a single quarterly panel dataset joined on CBSA code + year + quarter: 
+* HPI PO and HPI AT joined with full_join to retain all metro_quarter from either source
+* ZHVI quarterly averages attached via left_join
+* Population features broadcast across all four quarters of each year and attached via left_join
+
 
 ```{r}
+zhvi_quarterly <- zhvi_qtr %>%
+  left_join(cbsa_crosswalk %>% mutate(cbsa = as.integer(cbsa)),
+            by = c("RegionName" = "census_name")) %>%
+  mutate(cbsa = suppressWarnings(as.integer(cbsa)))
 
+pop_quarterly <- pop_features %>%
+  mutate(cbsa = as.integer(cbsa)) %>%
+  group_by(cbsa) %>%
+  crossing(qtr = as.integer(1:4)) %>%
+  ungroup()
+
+names(pop_quarterly)
+
+zhvi_quarterly <- zhvi_quarterly %>%
+  rename(year = yr)
+
+hpi_po_clean <- hpi_po %>%
+  rename(year = yr) %>%
+  mutate(cbsa = as.integer(cbsa), year = as.integer(year), qtr = as.integer(qtr))
+
+hpi_at_clean <- hpi_at %>%
+  select(cbsa, metro_name, year = yr, qtr, hpi_at_sa = index_sa) %>%
+  mutate(cbsa = as.integer(cbsa), year = as.integer(year), qtr = as.integer(qtr))
+
+merged_full <- hpi_po_clean %>%
+  full_join(hpi_at_clean,   by = c("cbsa", "year", "qtr")) %>%
+  left_join(zhvi_quarterly, by = c("cbsa", "year", "qtr")) %>%
+  left_join(pop_quarterly,  by = c("cbsa", "year", "qtr"))
+
+glimpse(merged_full)
+message("Rows: ", nrow(merged_full), " | Metros: ", n_distinct(merged_full$cbsa, na.rm = TRUE))
 ```
+
+Survivor Analysis: 
+
+We are ensuring that we have a sufficiently panel for modeling. So, we are checking how many metros have at least 3 quarters of data across both HPI source and the population series from 2015 forward. 
+This window gives us enough data to see what the pre-collapse period was for our training cities and gives candiate metro enough history to compute rolling features. 
+We want a minimum of 60 metros. 
 
 ```{r}
+survival <- merged_full %>%
+  filter(year >= 2015) %>%
+  group_by(cbsa) %>%
+  summarise(
+    metro       = first(na.omit(metro_name)),
+    hpi_po_obs  = sum(!is.na(index_sa)),
+    hpi_at_obs  = sum(!is.na(hpi_at_sa)),
+    zhvi_obs    = sum(!is.na(zhvi_qtr)),
+    pop_obs     = sum(!is.na(population)),
+    .groups     = "drop"
+  ) %>%
+  filter(hpi_po_obs >= 3, hpi_at_obs >= 3, pop_obs >= 3)
+
+cat(sprintf("Metros surviving full join (2015+): %d\n", nrow(survival)))
+cat(sprintf("%s 60+ metro target met\n", ifelse(nrow(survival_check) >= 60, "✅", "❌")))
 ```
+
+We got 67 metro which met the criteria for inclusion in the analysis.
