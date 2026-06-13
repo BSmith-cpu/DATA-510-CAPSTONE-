@@ -40,41 +40,50 @@ One subsection per class week. The owner team commits the new section **before e
 
 ## Week 4 -- Proposal milestone (M1)
 
-**Iteration ending:** <date>
+**Iteration ending:** 06/01/2026
 **Milestone tag in focus:** `M1-proposal`
 
 **Completed PBIs**
-- ...
+- PBI-001: Acquire and document
+- PBI-002: Draft research question and frame as a testable claim
 
 **In-flight (carrying across the boundary)**
-- ...
+- Early data inventory and source mapping for the housing and economics datasets
+- Early drafting of the metro-level EDA plan.
+- Narrowing the afforadbility-collapse target defintion 
 
 **Stakeholder response log**
 - Studio Brief from <peer PO 1>: adopted = ..., deferred = ..., declined (with reason) = ...
 - Studio Brief from <peer PO 2>: adopted = ..., deferred = ..., declined (with reason) = ...
 
 **Plan for next iteration**
-- Top PBIs (with milestone tags): ...
+- Top PBIs (with milestone tags): PBI-003: Building metro level EDA Profile (m2-data-summary)
 
 **Risks and impediments**
-- ...
+- The affordabilty-collapse target stil needs to be fully operationalized
+- Data coverage may vary across metros and years.
+- Scope creep could weaken the propsal if too many feature are added to soon. 
 
 ## Week 5
 
-**Iteration ending:** <date>
+**Iteration ending:** 06/08/2026
 **Milestone tag in focus:** `M1-proposal` / `M2-data-summary`
 
 **Completed PBIs**
-- ...
+- None
+- WIP: Build metro-levle EDA Profile
 
 **Stakeholder response log**
-- ...
+- N/A
 
 **Plan for next iteration**
-- ...
+- Finalize the target definition and EDA profiles for each metro
+- Work on feature engineering setup
 
 **Risks and impediments**
-- ...
+- Some series may need harmonization before modeling
+- Missingness patterns could distort comparisions if not handled carefully
+- The next phase depends on whether the EDA has exposed enough signal to justify the features. 
 
 ## Week 6
 
