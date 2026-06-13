@@ -1,0 +1,55 @@
+---
+title: Data Summary 
+output: html_document
+author: Brandon Smith
+---
+Affordability Collapse Definition: 
+We want to make sure that before moving foward with more feature enginnering that we are defining certain variables and was it considered "unaffordable". 
+
+Condition 1: Price Acceleration - 3-year HPI growth exceeds 30%
+Why: This condition captures rapid price increases that may lead to afforadbility issues
+'hpi_3yr_growth' >= 0.30
+
+Condition 2: Sustained momentum - YoY ZHVI growth exceeds 10% for 3+ consecutive quarters
+Why: This condition caputres sustained price growth that could indicated a consistent trend of rising price, which raises concern for afforadbility.
+'zhvi_yoy' >= 0.10 # for 3+ quarters in a row
+
+Condition 3: Affordability burden - median home prices exceeds 5x the median household income
+Why: This condition captures the relationship between home prices and income, which is a key factor in afforadbility.
+'price_to_income_ratio' >= 5.0
+
+Price Changes Over 1, 3, and 5 Years:
+```{r}
+merged_full <- read.csv("/Users/brandonsmith/DATA-510-CAPSTONE--2/data/final_data/merged_full.csv")
+```
+
+
+```{r}
+price_changes <- merged_full %>%
+  group_by(cbsa) %>%
+  arrange(year, qtr) %>%
+  mutate(
+    # HPI-based price changes (purchase-only, seasonally adjusted)
+    hpi_1yr_chg  = index_sa / lag(index_sa, 4)  - 1,  # 4 quarters = 1 year
+    hpi_3yr_chg  = index_sa / lag(index_sa, 12) - 1,  # 12 quarters = 3 years
+    hpi_5yr_chg  = index_sa / lag(index_sa, 20) - 1,  # 20 quarters = 5 years
+
+    # ZHVI-based price changes (absolute dollar level)
+    zhvi_1yr_chg = zhvi_qtr / lag(zhvi_qtr, 4)  - 1,
+    zhvi_3yr_chg = zhvi_qtr / lag(zhvi_qtr, 12) - 1,
+    zhvi_5yr_chg = zhvi_qtr / lag(zhvi_qtr, 20) - 1
+  ) %>%
+  ungroup()
+
+glimpse(price_changes)
+```
+
+
+```{r}
+price_changes %>%
+    filter(str_detect(RegionName, "Austin-Round Rock-San Marcos|Boise City|Tampa")) %>% 
+    filter(year >= 2019) %>%
+    select(RegionName, year, qtr, hpi_1yr_chg, hpi_3yr_chg, hpi_5yr_chg, zhvi_1yr_chg, zhvi_3yr_chg, zhvi_5yr_chg) %>% 
+    arrange(RegionName, year, qtr) %>%
+    print(n = 120)
+```
