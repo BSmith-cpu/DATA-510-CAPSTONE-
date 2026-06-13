@@ -53,8 +53,7 @@ One subsection per class week. The owner team commits the new section **before e
 - Narrowing the afforadbility-collapse target defintion 
 
 **Stakeholder response log**
-- Studio Brief from <peer PO 1>: adopted = ..., deferred = ..., declined (with reason) = ...
-- Studio Brief from <peer PO 2>: adopted = ..., deferred = ..., declined (with reason) = ...
+- N/A
 
 **Plan for next iteration**
 - Top PBIs (with milestone tags): PBI-003: Building metro level EDA Profile (m2-data-summary)
