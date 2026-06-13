@@ -38,6 +38,39 @@ This file is the **human-readable mirror** of the [GitHub Projects (v2) Iterativ
 
 ### PBI-003
 
+- **Title:** Build metro-level EDA profile
+- **Hypothesis:** As a research, I want a standarized EDA profle for each metro so I can compare housing and affordability dynamics across cities
+- **Create:** Create summary tables and plots for price, income, burden, population, and HPI trends
+- **Observe:** Observes the missingness, outliers, and distribution shape.
+- **Analyze:** Analyze which metro show early divergence from the training cities
+- **Tag:** `M-2-data-summary`
+- **Size:** M
+- **GitHub issue:** <link once filed>
+
+### PBI-004
+
+- **Title: Feature engineering and target design
+- **Hypothesis:** I want a defensible target definition and modeling dataset so I can train without leakage and comapre metros consistently.
+- **Create:** Createe the affordability-collapse label, lagged features, rolling windows, and normalized rate of change
+- **Observe:** Observe class balance, multicollinearity, and leakage risk
+- **Analyze:** Whether the enginnered features capture early-warning behavior well enough for prediction
+- **Tag:** `M-3-poster-draft`
+- **Size:** L
+- **GitHub issue:** ...
+
+### PBI-005
+
+- **Title:** Preditive modeling and interpretation
+- **Hypothesis:** I want to validated preditive model with explaination so I can rank at-risk metros and explain why they are being flagged
+- **Create:** Create the baseline models, tuned gradient boosting, backtest, and SHAP outputs
+- **Observe:** Observe preformance, calibration, and stability across folds
+- **Analyze:** Analyze lead time, top drivers, and whether the model generalizes for non-training metros
+- **Tag:** `M4-write-up`
+- **Size:** XL
+- **GitHub issue:** ...
+
+  ### PBI-00N
+
 - **Title:** ...
 - **Hypothesis:** ...
 - **Create:** ...
