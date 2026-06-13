@@ -51,5 +51,5 @@ price_changes %>%
     filter(year >= 2019) %>%
     select(RegionName, year, qtr, hpi_1yr_chg, hpi_3yr_chg, hpi_5yr_chg, zhvi_1yr_chg, zhvi_3yr_chg, zhvi_5yr_chg) %>% 
     arrange(RegionName, year, qtr) %>%
-    print(n = 120)
+    print(n = 40)
 ```
