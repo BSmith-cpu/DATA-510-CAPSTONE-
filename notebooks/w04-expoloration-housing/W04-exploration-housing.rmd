@@ -200,7 +200,7 @@ the 'clean_pop' function filter to Metropolitation Statisical Areas only (droppi
 clean_pop <- function(df) {
   df %>%
     filter(LSAD == "Metropolitan Statistical Area") %>%
-    select(cbsa = CBSA, metro_name = NAME,
+    select(cbsa = CBSA, metro_name = NAME, # nolint # nolint
            starts_with("POPESTIMATE")) %>%
     pivot_longer(
       cols      = starts_with("POPESTIMATE"),
@@ -327,3 +327,11 @@ cat(sprintf("%s 60+ metro target met\n", ifelse(nrow(survival_check) >= 60, "✅
 ```
 
 We got 67 metro which met the criteria for inclusion in the analysis.
+
+Export merged_full to CSV
+```{r}
+# Export the merged_full dataframe to CSV
+write.csv(merged_full, 
+          "/Users/brandonsmith/DATA-510-CAPSTONE--2/data/final_data/merged_full.csv",
+          row.names = FALSE)
+```
