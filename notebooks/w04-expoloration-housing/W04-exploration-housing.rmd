@@ -171,8 +171,7 @@ Cleaning the HPI datasets
 We are standardizing the column names and types across HPI files to prepare to join them.
 ```{r}
 hpi_po_clean <- hpi_po%>%
-  select(cbsa, metro_name, year = yr, qtr, hpi_po_sa = index_sa) %>%
-  rename(year = yr)
+  select(cbsa, metro_name, year = yr, qtr, hpi_po_sa = index_sa)
 
 hpi_at_clean <- hpi_at %>%
   select(cbsa, metro_name, year = yr, qtr, hpi_at_sa = index_sa)
@@ -323,7 +322,7 @@ survival <- merged_full %>%
   filter(hpi_po_obs >= 3, hpi_at_obs >= 3, pop_obs >= 3)
 
 cat(sprintf("Metros surviving full join (2015+): %d\n", nrow(survival)))
-cat(sprintf("%s 60+ metro target met\n", ifelse(nrow(survival_check) >= 60, "✅", "❌")))
+cat(sprintf("%s 60+ metro target met\n", ifelse(nrow(survival) >= 60, "✅", "❌")))
 ```
 
 We got 67 metro which met the criteria for inclusion in the analysis.
