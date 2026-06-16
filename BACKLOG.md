@@ -23,7 +23,7 @@ This file is the **human-readable mirror** of the [GitHub Projects (v2) Iterativ
 - **Analyze:** decide whether the dataset survives feasibility; document in the next Iteration Review.
 - **Tag:** `M1-proposal`
 - **Size:** M
-- **GitHub issue:** <link once filed>
+- **GitHub issue:** All the data is in the data folder. 
 
 ### PBI-002
 
@@ -34,7 +34,7 @@ This file is the **human-readable mirror** of the [GitHub Projects (v2) Iterativ
 - **Analyze:** revise based on Studio Brief feedback.
 - **Tag:** `M1-proposal`
 - **Size:** S
-- **GitHub issue:** <link once filed>
+- **GitHub issue:** Completed - working on moving the purposal to GitHub (https://docs.google.com/document/d/1jVrZG5Xxil9l_9KToBcbl8LXPMPtTuL417PqI9nhORg/edit?tab=t.0)
 
 ### PBI-003
 
@@ -45,7 +45,7 @@ This file is the **human-readable mirror** of the [GitHub Projects (v2) Iterativ
 - **Analyze:** Analyze which metro show early divergence from the training cities
 - **Tag:** `M-2-data-summary`
 - **Size:** M
-- **GitHub issue:** <link once filed>
+- **GitHub issue:** Work In Progress
 
 ### PBI-004
 
