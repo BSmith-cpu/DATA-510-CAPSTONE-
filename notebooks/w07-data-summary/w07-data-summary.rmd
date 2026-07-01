@@ -56,7 +56,7 @@ income_clean <- income_by_year %>%
     income_moe = moe
   )
 
-write_csv(income_clean, "/Users/brandonsmith/DATA-510-CAPSTONE--2/data/final_data/income_clean.csv")
+write_csv(income_clean, "/Users/brandonsmith/DATA-510-CAPSTONE--2/data/final_data/income_clean.csv", row.names = FALSE)
 ```
 
 ```{r}
@@ -73,18 +73,37 @@ income_clean %>%
 ```{r}
 merged_full <- merged_full %>%
   left_join(income_clean, by = c("cbsa", "year"))
+```
 
+```{r}
 merged_full <- merged_full %>%
   mutate(
-    price_to_income_ratio = zhvi_qtr / median_income
+    price_to_income_ratio = zhvi_qtr / median_income,
+    affordability_burden = price_to_income_ration >= 5.0
   )
+```
 
+```{r}
 merged_full %>%
-  filter(cbsa %in% c(12420, 14260, 45300)) %>%
+  filter(cbsa %in% c(12420, 14260, 45300), year >= 2019) %>%
   select(metro_name.x, year, qtr, zhvi_qtr, median_income, price_to_income_ratio) %>%
   arrange(metro_name.x, year, qtr) %>%
   head(60)
 ```
+
+```{r}
+merged_full %>%
+  filter(str_detect(metro_name.x, "Austin-Round Rock-San Marcos, TX")) %>%
+  distinct(cbsa, metro_name.x)
+
+merged_full %>%
+  filter(cbsa == 12420) %>%
+  summarise(
+    n_rows = n(),
+    n_zhvi_present = sum(!is.na(zhvi_qtr)), 
+    min_year_zhvi = min(year[!is.na(zhvi_qtr)], na.rm = TRUE)
+  )
+ ```
 
 ```{r}
 price_changes <- merged_full %>%
