@@ -297,3 +297,30 @@ price_changes %>%
   ) +
   theme_minimal()
 ```
+
+```{r}
+price_changes %>%
+  filter(cbsa %in% c(12420, 14260, 45294), year >= 2015) %>%
+  mutate(
+    metro = case_when(
+      cbsa == 12420 ~ "Austin",
+      cbsa == 14260 ~ "Boise",
+      cbsa == 45294 ~ "Tampa"
+    ),
+    date = as.Date(paste(year, (qtr - 1) * 3 + 1, 1, sep = "-"))
+  ) %>%
+  filter(year >= 2015) %>%
+  ggplot(aes(x = date, y = metro)) + 
+  geom_line(aes(group = metro), color = "grey80", size = 6) + 
+  geom_point(
+    date = . %>% filter(collapse_onset),
+    color = "red",
+    size = 4
+  ) + 
+  labs(
+    title = "Affrodability Collapse Onset by Metro", 
+    x = NULL,
+    y = NULL
+  ) + theme_minimal()
+
+  ```
