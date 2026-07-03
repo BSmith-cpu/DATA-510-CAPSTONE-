@@ -19,10 +19,10 @@ Why: This condition captures the relationship between home prices and income, wh
 'price_to_income_ratio' >= 5.0
 
 Price Changes Over 1, 3, and 5 Years:
+
 ```{r}
 library(tidyverse)
 library(tidycensus)
-
 
 merged_full <- read.csv("/Users/brandonsmith/DATA-510-CAPSTONE--2/data/final_data/merged_full.csv")
 ```
@@ -38,12 +38,12 @@ zhvi_raw <- read.csv("/Users/brandonsmith/DATA-510-CAPSTONE--2/DATA-510-CAPSTONE
 
 zhvi_long <- zhvi_raw %>%
   pivot_longer(
-    cols = starts_with("X"), 
-    names_to = "date", 
+    cols = starts_with("X"),
+    names_to = "date",
     values_to = "zhvi"
   ) %>%
   mutate(
-    date = as.Date(str_remove(date, "^X") %>% str_replace_all("\\.", "-")), 
+    date = as.Date(str_remove(date, "^X") %>% str_replace_all("\\.", "-")),
     year = year(date),
     qtr = quarter(date)
   )
@@ -59,10 +59,10 @@ zhvi_raw %>%
 
 ```{r}
 cbsa_crosswalk <- tribble(
-  ~RegionName, ~cbsa,
-  "Austin, TX", 12420,
-  "Boise City, ID", 16060,
-  "Tampa, FL", 45300
+  ~RegionName,       ~cbsa,
+  "Austin, TX",      12420,
+  "Boise City, ID",  14260,
+  "Tampa, FL",       45294
 )
 
 zhvi_long_matched <- zhvi_long %>%
@@ -73,52 +73,33 @@ zhvi_long_matched %>%
 ```
 
 ```{r}
+zhvi_quarterly <- zhvi_long_matched %>%
+  group_by(cbsa, RegionName, year, qtr) %>%
+  summarise(zhvi_qtr_fixed = mean(zhvi, na.rm = TRUE), .groups = "drop")
+
+merged_full <- merged_full %>%
+  select(-matches("^zhvi_qtr")) %>%
+  left_join(zhvi_quarterly, by = c("cbsa", "year", "qtr")) %>%
+  rename(zhvi_qtr = zhvi_qtr_fixed)
+```
+
+```{r}
 merged_full %>%
   filter(str_detect(metro_name.x, "Tampa")) %>%
   distinct(cbsa, metro_name.x)
 ```
 
 ```{r}
-# Step 1: Rebuild crosswalk fresh
-cbsa_crosswalk <- tribble(
-  ~RegionName,       ~cbsa,
-  "Austin, TX",      12420,
-  "Boise City, ID",  14260,
-  "Tampa, FL",       45300
+training_cbsas <- c(
+  austin = 12420,
+  boise  = 14260,
+  tampa  = 45294
 )
 
-# Step 2: Rebuild matched long table fresh
-zhvi_long_matched <- zhvi_long %>%
-  inner_join(cbsa_crosswalk, by = "RegionName")
-
-print("Check 1 - should show 3 rows with cbsa 12420, 14260, 45300:")
-zhvi_long_matched %>% count(cbsa, RegionName) %>% print()
-
-# Step 3: Rebuild quarterly aggregation fresh
-zhvi_quarterly <- zhvi_long_matched %>%
-  group_by(cbsa, RegionName, year, qtr) %>%
-  summarise(zhvi_qtr_fixed = mean(zhvi, na.rm = TRUE), .groups = "drop")
-
-print("Check 2 - should show 3 rows again:")
-zhvi_quarterly %>% count(cbsa, RegionName) %>% print()
-
-# Step 4: Rejoin into merged_full
-merged_full <- merged_full %>%
-  select(-zhvi_qtr) %>%
-  left_join(zhvi_quarterly, by = c("cbsa", "year", "qtr")) %>%
-  rename(zhvi_qtr = zhvi_qtr_fixed)
-
-# Step 5: Final verification
-print("Check 3 - final result:")
-merged_full %>%
-  filter(cbsa %in% c(12420, 14260, 45300)) %>%
-  group_by(cbsa) %>%
-  summarise(
-    n_rows = n(),
-    n_zhvi_present = sum(!is.na(zhvi_qtr)),
-    min_year_zhvi = min(year[!is.na(zhvi_qtr)], na.rm = TRUE)
-  ) %>%
-  print()
+write_csv(
+  merged_full,
+  "/Users/brandonsmith/DATA-510-CAPSTONE--2/data/final_data/merged_full_fixed.csv"
+)
 ```
 
 ```{r}
@@ -129,7 +110,7 @@ income_by_year <- map_dfr(years, function(yr) {
     year = yr,
     survey = "acs5"
   ) %>%
-  mutate(year = yr)
+    mutate(year = yr)
 })
 ```
 
@@ -148,29 +129,53 @@ write_csv(income_clean, "/Users/brandonsmith/DATA-510-CAPSTONE--2/data/final_dat
 ```
 
 ```{r}
+income_clean_tampa_fix <- income_clean %>%
+  filter(cbsa == 45300) %>%
+  mutate(cbsa = 45294)
+
+income_clean <- bind_rows(income_clean, income_clean_tampa_fix)
+
 income_clean %>%
-  filter(cbsa %in% c(12420, 14260, 45300)) %>%
+  filter(cbsa %in% c(45294, 45300)) %>%
+  arrange(cbsa, year)
+```
+
+```{r}
+income_clean %>%
+  filter(cbsa %in% c(12420, 14260, 45294)) %>%
   print(n = 50)
 ```
 
 ```{r}
 merged_full <- merged_full %>%
+  select(-matches("median_income")) %>%
+  select(-matches("income_moe")) %>%
   left_join(income_clean, by = c("cbsa", "year"))
+
+names(merged_full)[str_detect(names(merged_full), "median_income")]
 ```
 
 ```{r}
 merged_full <- merged_full %>%
   mutate(
-    price_to_income_ratio = zhvi_qtr / median_income, 
+    price_to_income_ratio = zhvi_qtr / median_income,
     affordability_burden = !is.na(price_to_income_ratio) & price_to_income_ratio >= 5.0
   )
 ```
 
 ```{r}
 merged_full %>%
-  filter(cbsa %in% c(12420, 14260, 45300)) %>%
-  select(metro_name.x, year, qtr, zhvi_qtr, median_income, price_to_income_ratio, affordability_burden) %>%
-  arrange(metro_name.x, year, qtr) %>%
+  filter(cbsa == 45294, year >= 2019) %>%
+  select(cbsa, year, qtr, zhvi_qtr, median_income, price_to_income_ratio, affordability_burden) %>%
+  arrange(year, qtr) %>%
+  head(30)
+```
+
+```{r}
+merged_full %>%
+  filter(cbsa %in% c(12420, 14260, 45294), year >= 2010) %>%
+  select(metro_name.x, cbsa, year, qtr, zhvi_qtr, median_income, price_to_income_ratio, affordability_burden) %>%
+  arrange(cbsa, year, qtr) %>%
   head(60)
 ```
 
@@ -188,22 +193,21 @@ merged_full %>%
   )
 ```
 
-
-
 ```{r}
 price_changes <- merged_full %>%
   arrange(cbsa, year, qtr) %>%
   group_by(cbsa) %>%
   mutate(
-    hpi_1yr_chg = index_sa / lag(index_sa, 4) - 1, 
-    hpi_3yr_chg = index_sa / lag(index_sa, 12) - 1, 
+    hpi_1yr_chg = index_sa / lag(index_sa, 4) - 1,
+    hpi_3yr_chg = index_sa / lag(index_sa, 12) - 1,
     hpi_5yr_chg = index_sa / lag(index_sa, 20) - 1,
 
     zhvi_1yr_chg = zhvi_qtr / lag(zhvi_qtr, 4) - 1,
-    zhvi_3yr_chg = zhvi_qtr / lag(zhvi_qtr, 12) - 1, 
-    zhvi_5yr_chg = zhvi_qtr / lag(zhvi_qtr, 20) -1,
+    zhvi_3yr_chg = zhvi_qtr / lag(zhvi_qtr, 12) - 1,
+    zhvi_5yr_chg = zhvi_qtr / lag(zhvi_qtr, 20) - 1,
+    zhvi_yoy = zhvi_qtr / lag(zhvi_qtr, 4) - 1,
 
-    price_shock = !is.na(hpi_3yr_chg) & hpi_3yr_chg > 0.30, 
+    price_shock = !is.na(hpi_3yr_chg) & hpi_3yr_chg >= 0.30,
     momentum_flag = !is.na(zhvi_yoy) & zhvi_yoy >= 0.10
   ) %>%
   mutate(
@@ -211,21 +215,63 @@ price_changes <- merged_full %>%
   ) %>%
   group_by(cbsa, streak_group) %>%
   mutate(
-    momentum_run = if_else(momentum_fag, row(), OL)
+    momentum_run = if_else(momentum_flag, row_number(), 0L)
   ) %>%
   ungroup() %>%
   mutate(
-    sustained_momentum = momentum_run >= 3, 
-
+    sustained_momentum = momentum_run >= 3,
     collapse_onset_raw = price_shock & sustained_momentum & affordability_burden
   ) %>%
   group_by(cbsa) %>%
   mutate(
-    collapse_onset = collapse_onset_raw & !lag(collapse_onset_raw, default = FALSE), 
+    collapse_onset = collapse_onset_raw & !lag(collapse_onset_raw, default = FALSE),
     collapse_ever = cumany(collapse_onset_raw)
   ) %>%
   ungroup()
 
 glimpse(price_changes)
-
 ```
+
+```{r}
+price_changes %>%
+  filter(cbsa %in% c(12420, 14260, 45294), year >= 2019) %>%
+  select(cbsa, year, qtr, hpi_3yr_chg, zhvi_yoy, price_to_income_ratio, price_shock, momentum_flag, momentum_run, sustained_momentum, collapse_onset_raw, collapse_onset, collapse_ever) %>%
+  arrange(cbsa, year, qtr) %>%
+  print(n = 100)
+```
+
+```{r}
+first_collapse <- price_changes %>%
+  filter(cbsa %in% c(12420, 14260, 45294), collapse_onset) %>%
+  group_by(cbsa) %>%
+  summarise(
+    first_year = first(year),
+    first_qtr = first(qtr), 
+    hpi_3yr_at_onset = first(hpi_3yr_chg),
+    zhvi_yoy_at_onset = first(zhvi_yoy),
+    pti_at_onset = first(price_to_income_ratio),
+    .groups = "drop"
+  ) %>%
+  arrange(first_year, first_qtr)
+
+glimpse(first_collapse)
+```
+
+```{r}
+price_changes %>%
+  filter(cbsa %in% c(12420,14260, 45294), year >= 2018) %>%
+  group_by(cbsa, year) %>%
+  summarise(
+    avg_hpi_3yr = mean(hpi_3yr_chg, na.rm = TRUE),
+    avg_zhvi_yoy = mean(zhvi_yoy, na.rm = TRUE), 
+    avg_pti = mean(price_to_income_ratio, na.rm = TRUE),
+    qtrs_price_shock = sum(price_shock, na.rm = TRUE),
+    qtrs_momentum = sum(momentum_flag, na.rm = TRUE),
+    qtrs_burden = sum(affordability_burden, na.rm = TRUE),
+    any_collapse_onset = any(collapse_onset, na.rm = TRUE), 
+    ever_collapsed = any(collapse_ever, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  arrange(cbsa, year)
+```
+
