@@ -324,3 +324,41 @@ price_changes %>%
   ) + theme_minimal()
 
   ```
+
+
+  ```{r}
+library(tidyverse)
+
+
+
+merged_full <- merged_full %>%
+  mutate(cbsa = case_when(
+    str_detect(metro_name.x, "Austin") ~ 12420,
+    str_detect(metro_name.x, "Boise") ~ 14260,
+    str_detect(metro_name.x, "Tampa") ~ 45294,
+    TRUE ~ cbsa
+  ))
+
+acs_income <- read_csv("acs_median_income.csv") %>%
+  mutate(cbsa = if_else(cbsa == 45300, 45294, cbsa))
+
+merged_full <- merged_full %>%
+  left_join(acs_income %>% select(cbsa, year, median_income), by = c("cbsa", "year"))
+
+dupe_cols <- names(merged_full)[str_detect(names(merged_full), "\\.x\\.x|\\.y\\.y|\\.x\\.x\\.x")]
+merged_full <- merged_full %>% select(-any_of(dupe_cols))
+
+merged_full <- merged_full %>%
+  arrange(cbsa, year, qtr) %>%
+  group_by(cbsa) %>%
+  mutate(
+    zhvi_yoy = (zhvi_qtr / lag(zhvi_qtr, 4)) - 1,
+    price_to_income_ratio = zhvi_qtr / median_income,
+    hpi_3yr_chg = (index_sa / lag(index_sa, 12)) - 1,
+    is_unaffordable = price_to_income_ratio > 5.0,
+    collapse_onset = is_unaffordable & !lag(is_unaffordable, default = FALSE)
+  ) %>%
+  ungroup()
+
+write_csv(merged_full, "/Users/brandonsmith/DATA-510-CAPSTONE--2/DATA-510-CAPSTONE--2/data/final_data/price_changes_with_collapse_flags.csv")
+  ```
