@@ -1,0 +1,2 @@
+model,accuracy,precision,recall,f1,roc_auc
+"Model 1 (explanatory, target=is_unaffordable)",0.8611111111111112,0.8333333333333334,0.7692307692307693,0.8,0.8795986622073579
