@@ -32,6 +32,7 @@ hpi_at <- read.csv(
   header    = FALSE,
   col.names = c("metro_name", "cbsa", "yr", "qtr", "index_nsa", "index_sa")
 ) %>%
+  filter(cbsa != "Area Code") %>%
   mutate(
     index_nsa = as.numeric(str_remove_all(as.character(index_nsa), "[()\\s]")),
     index_sa  = as.numeric(str_remove_all(as.character(index_sa),  "[()\\s]"))
@@ -259,6 +260,27 @@ zhvi_cbsa_lookup <- zhvi_long %>%
 message('ZHVI metros matched to CBSA:', nrow(zhvi_cbsa_lookup)," / ", n_distinct(zhvi_long$RegionName)) # 895/895
 ```
 
+```{r}
+zhvi_quarterly <- zhvi_qtr %>%
+  left_join(cbsa_crosswalk %>% mutate(cbsa = as.integer(cbsa)),
+            by = c("RegionName" = "census_name")) %>%
+  mutate(cbsa = suppressWarnings(as.integer(cbsa))) %>%
+  rename(year = yr)
+```
+
+
+```{r}
+pop_quarterly <- pop_features %>%
+  mutate(cbsa = as.integer(cbsa)) %>%
+  group_by(cbsa) %>%
+  crossing(qtr = as.integer(1:4)) %>%
+  ungroup()
+```
+
+```{r}
+names(pop_quarterly)
+glimpse(pop_quarterly)
+```
 Four-Source Panel Join:
 
 This took us forever - we are combining all four data sources into a single quarterly panel dataset joined on CBSA code + year + quarter: 
@@ -268,39 +290,36 @@ This took us forever - we are combining all four data sources into a single quar
 
 
 ```{r}
-zhvi_quarterly <- zhvi_qtr %>%
-  left_join(cbsa_crosswalk %>% mutate(cbsa = as.integer(cbsa)),
-            by = c("RegionName" = "census_name")) %>%
-  mutate(cbsa = suppressWarnings(as.integer(cbsa)))
-
-pop_quarterly <- pop_features %>%
-  mutate(cbsa = as.integer(cbsa)) %>%
-  group_by(cbsa) %>%
-  crossing(qtr = as.integer(1:4)) %>%
-  ungroup()
-
-names(pop_quarterly)
-
-zhvi_quarterly <- zhvi_quarterly %>%
-  rename(year = yr)
-
 hpi_po_clean <- hpi_po %>%
   rename(year = yr) %>%
+  select(cbsa, year, qtr, hpi_po_sa = index_sa) %>%
   mutate(cbsa = as.integer(cbsa), year = as.integer(year), qtr = as.integer(qtr))
 
 hpi_at_clean <- hpi_at %>%
   select(cbsa, metro_name, year = yr, qtr, hpi_at_sa = index_sa) %>%
   mutate(cbsa = as.integer(cbsa), year = as.integer(year), qtr = as.integer(qtr))
 
-merged_full <- hpi_po_clean %>%
-  full_join(hpi_at_clean,   by = c("cbsa", "year", "qtr")) %>%
+merged_full <- hpi_at_clean %>%
+  full_join(hpi_po_clean, by = c("cbsa", "year", "qtr")) %>%
   left_join(zhvi_quarterly, by = c("cbsa", "year", "qtr")) %>%
-  left_join(pop_quarterly,  by = c("cbsa", "year", "qtr"))
+  left_join(pop_quarterly,  by = c("cbsa", "year", "qtr")) %>%
+  mutate(
+    index_sa = coalesce(hpi_at_sa, hpi_po_sa)
+  )
 
 glimpse(merged_full)
-message("Rows: ", nrow(merged_full), " | Metros: ", n_distinct(merged_full$cbsa, na.rm = TRUE))
 ```
 
+Survivor Analysis:
+
+We are ensuring that we have a sufficiently panel for modeling. So, we are checking how many metros have at least 3 quarters of data across both HPI source and the population series from 2015 forward.
+```{r}
+problem_rows_at <- hpi_at %>% filter(is.na(suppressWarnings(as.integer(cbsa))) & !is.na(cbsa))
+print(unique(problem_rows_at$cbsa))
+
+problem_rows_po <- hpi_po %>% filter(is.na(suppressWarnings(as.integer(cbsa))) & !is.na(cbsa))
+print(unique(problem_rows_po$cbsa))
+```
 Survivor Analysis: 
 
 We are ensuring that we have a sufficiently panel for modeling. So, we are checking how many metros have at least 3 quarters of data across both HPI source and the population series from 2015 forward. 
@@ -312,14 +331,13 @@ survival <- merged_full %>%
   filter(year >= 2015) %>%
   group_by(cbsa) %>%
   summarise(
-    metro       = first(na.omit(metro_name)),
-    hpi_po_obs  = sum(!is.na(index_sa)),
-    hpi_at_obs  = sum(!is.na(hpi_at_sa)),
-    zhvi_obs    = sum(!is.na(zhvi_qtr)),
-    pop_obs     = sum(!is.na(population)),
-    .groups     = "drop"
+    metro    = first(na.omit(metro_name.x)),
+    hpi_obs  = sum(!is.na(index_sa)),
+    zhvi_obs = sum(!is.na(zhvi_qtr)),
+    pop_obs  = sum(!is.na(population)),
+    .groups  = "drop"
   ) %>%
-  filter(hpi_po_obs >= 3, hpi_at_obs >= 3, pop_obs >= 3)
+  filter(hpi_obs >= 3, pop_obs >= 3)
 
 cat(sprintf("Metros surviving full join (2015+): %d\n", nrow(survival)))
 cat(sprintf("%s 60+ metro target met\n", ifelse(nrow(survival) >= 60, "✅", "❌")))
@@ -330,7 +348,5 @@ We got 67 metro which met the criteria for inclusion in the analysis.
 Export merged_full to CSV
 ```{r}
 # Export the merged_full dataframe to CSV
-write.csv(merged_full, 
-          "/Users/brandonsmith/DATA-510-CAPSTONE--2/data/final_data/merged_full.csv",
-          row.names = FALSE)
+write.csv(merged_full, "/Users/brandonsmith/DATA-510-CAPSTONE--2/DATA-510-CAPSTONE--3/data/final_data/merged_full.csv", row.names = FALSE)
 ```
