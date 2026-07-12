@@ -57,8 +57,3 @@ ggplot(tuning_df, aes(x = Metric, y = Value, fill = Stage)) +
 ggsave("/Users/brandonsmith/DATA-510-CAPSTONE--2/DATA-510-CAPSTONE--3/notebooks/w07-data-summary/output/figures/tuning_before_after.png", width = 7, height = 5)
 ```
 
-```{r save-pngs}
-ggsave("/Users/brandonsmith/DATA-510-CAPSTONE--2/DATA-510-CAPSTONE--3/notebooks/w07-data-summary/output/figures/top15_risk_metros.png", width = 8, height = 6)
-ggsave("/Users/brandonsmith/DATA-510-CAPSTONE--2/DATA-510-CAPSTONE--3/notebooks/w07-data-summary/output/figures/model_metrics_comparison.png", width = 8, height = 5)
-ggsave("/Users/brandonsmith/DATA-510-CAPSTONE--2/DATA-510-CAPSTONE--3/notebooks/w07-data-summary/output/figures/tuning_before_after.png", width = 7, height = 5)
-```
