@@ -123,13 +123,14 @@ This is an observational, correlation model. Granger casuality tests in R assess
 
 <!-- Paste from M1 Section 6; tighten once analysis is fixed. -->
 
-**Design:**
+1. Feature engineering (Python): price-to-income ratio 5-year trend, affordability momentum score (rolling 3-year slope), housing supply pressure (demand growth / permits issued), mortgage burden % of income, population velocity/acceleration, rent-to-own crossover point. 
+2. Modeling (Python): XGBoost/LightGBM classifer trained on labled collpase windows from the three training metros, scored against all other metros in the panel. 
+3. Explainability (Python): SHAP values to rank features contribution per metro and per time window. 
+4. Validation (R): backtesting against known collapse timing, Granger causality tests on top SHAP features, spatial autocorrectilation check (Moran's I) to confirm findings aren't driven by regional clustering (e.g, all SUn Belt metros moving together for unrealted reasons)
 
-**Primary analysis:**
+**Evaluation metros:** Precision/recall and AUC on held-out collapse windows; lead time as (quarters between flag and observed income-share decline) as the primary stakeholder-facing metric, since flagging accuracy matters less than how much warning time it buys.
 
-**Evaluation metrics:**
-
-**Train / validation / holdout:**
+**Train / validation / holdout:** Train in Boise, Austin, Tampa (1975-2020 for feature construction, collapse-eriod labels from ~2010-2022 depending on metro); validate in all other metro across the three training cities; holdout test on a small set of currently-affordable mid-sized metros for out-of-sample risk scoring (no ground truth avaibale yet - evaluted qualitatively against domain expectation, e.g., known "hot" metros in housing press). 
 
 ```{r}
 #| label: fig-methods-placeholder
@@ -146,7 +147,12 @@ text(1, 1, "Replace after M2/M3")
 
 <!-- Fill after M2 data summary and M3 poster figures. -->
 
-*(Stub: key findings with @fig-methods-placeholder and tables.)*
+*(Stub - populate after M2 EDA and M3 modeling.)* Expected components once real results are in: 
+
+- Time-series comparison of price-to-income ratio for Boise, Austin, Tampa vs. the national median, showing the inflection point before each metro's known collapse. 
+- SHAP summary plot ranking the top 5-8 predictive features across the three training metros.
+- Ranked risk-index table for the current scoring population of mid-sized metros, with lead-time estimates.
+- Backtest table showing precision/recall/AUC and Granger causality p-value for top features.
 
 # Discussion, Limitations, and Future Work
 
@@ -154,7 +160,15 @@ text(1, 1, "Replace after M2/M3")
 
 **Limitations:** *(tie to actual data and design)*
 
+- Only three labeled collapse cases, all with somewhat similar drivers (in-migration-driven demand shocks), which may bias the model toward detecing that specific pattern rather than all forms of affordability collapse. 
+- FHFA and ACS data lag real-time conditions by months to a year, limiting how "early" any warning can realistically be. 
+- No direct displacement or eviction data; middle-income household share is a proxy, not a direct measure. 
+
 **Future work:**
+
+- Expand training labels to additioanl collapse metros (e.g., Nashville, Salt Lake City) to test generalizability beyond the three-city training set.
+- Incorporate short-term rental (Airbnb) density and institutional single-family purchase share as additioanl supply-pressure features.
+- Extend the R Shiny dashboard to let users adjust risk thresholds interactively for their own stakeholder use case (lender vs. planner vs. advocate).
 
 # Conclusions and Recommendations
 
@@ -181,17 +195,16 @@ quarto render deliverables/M4-writeup-draft/writeup.qmd
 <!-- Create refs.bib alongside this file. Example entries: -->
 
 <!--
-@article{liu2016,
-  title={Wildfire-specific fine particulate matter and risk of hospital admissions in urban and rural counties},
-  author={Liu, J. C. and others},
-  journal={Epidemiology},
-  year={2016}
+@misc{zillowresearch,
+  title={Zillow Research: Housing Data},
+  author={{Zillow Group}},
+  year={2026},
+  howpublished={\url{https://www.zillow.com/research/data/}}
 }
 
-@article{reid2016,
-  title={Critical review of health impacts of wildfire smoke exposure},
-  author={Reid, C. E. and others},
-  journal={Environmental Health Perspectives},
-  year={2016}
+@misc{urbaninstitute,
+  title={Housing Finance Policy Center},
+  author={{Urban Institute}},
+  year={2026},
+  howpublished={\url{https://www.urban.org/policy-centers/housing-finance-policy-center}}
 }
--->
