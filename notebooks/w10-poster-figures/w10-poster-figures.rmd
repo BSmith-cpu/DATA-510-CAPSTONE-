@@ -5,6 +5,13 @@ date: "'r Sys.Date()'"
 output: html_document
 ---
 
+```{r}
+dir.create(
+  "/Users/brandonsmith/DATA-510-CAPSTONE--2/DATA-510-CAPSTONE--3/notebooks/w07-data-summary/output/figures",
+  recursive = TRUE,
+  showWarnings = FALSE
+)
+```
 ```{r top15-risk, fig.width=9, fig.height=7}
 top15 <- data.frame(
   metro = c("Bozeman, MT", "Pinehurst-Southern Pines, NC", "Amherst Town-Northampton, MA",
@@ -57,3 +64,70 @@ ggplot(tuning_df, aes(x = Metric, y = Value, fill = Stage)) +
 ggsave("/Users/brandonsmith/DATA-510-CAPSTONE--2/DATA-510-CAPSTONE--3/notebooks/w07-data-summary/output/figures/tuning_before_after.png", width = 7, height = 5)
 ```
 
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+
+df <- read_csv("/Users/brandonsmith/DATA-510-CAPSTONE--2/DATA-510-CAPSTONE--3/data/final_data/price_changes_with_collapse_flags.csv")
+
+metros <- c(
+  "Austin-Round Rock-San Marcos, TX",
+  "Boise City, ID",
+  "Tampa, FL (MSAD)"
+)
+
+sub <- df %>%
+  filter(`metro_name.x` %in% metros) %>%
+  mutate(
+    year = as.integer(year),
+    qtr  = as.integer(qtr),
+    date = ymd(paste(year, (qtr - 1) * 3 + 1, 1, sep = "-")),
+    metro = case_when(
+      `metro_name.x` == "Austin-Round Rock-San Marcos, TX" ~ "Austin",
+      `metro_name.x` == "Boise City, ID" ~ "Boise",
+      `metro_name.x` == "Tampa, FL (MSAD)" ~ "Tampa"
+    ),
+    affordability_burden = as.logical(affordability_burden)
+  ) %>%
+  filter(!is.na(date), !is.na(price_to_income_ratio)) %>%
+  arrange(metro, date)
+
+cat("Rows per metro:\n")
+print(table(sub$metro))
+cat("Date range:", min(sub$date), "-", max(sub$date), "\n")
+
+dir.create("output", showWarnings = FALSE)
+dir.create("output/figures", recursive = TRUE, showWarnings = FALSE)
+write_csv(sub, "output/price_to_income_collapse.csv")
+
+flagged <- sub %>% filter(affordability_burden == TRUE)
+
+colors <- c("Austin" = "#1f77b4", "Boise" = "#ff7f0e", "Tampa" = "#2ca02c")
+
+p <- ggplot(sub, aes(x = date, y = price_to_income_ratio, color = metro)) +
+  geom_line(linewidth = 1.1, na.rm = TRUE) +
+  geom_point(
+    data = flagged,
+    aes(x = date, y = price_to_income_ratio, color = metro),
+    size = 3, shape = 21, fill = NA, stroke = 1.3
+  ) +
+  geom_hline(yintercept = 5.0, linetype = "dashed", color = "gray40") +
+  scale_color_manual(values = colors) +
+  labs(
+    title = "Price-to-Income Ratio with Affordability Collapse Flags",
+    x = "Date",
+    y = "Price-to-Income Ratio",
+    color = "Metro"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "bottom"
+  )
+
+ggsave("output/figures/price_to_income_collapse.png", plot = p, width = 10, height = 6, dpi = 200)
+
+print(p)
+```

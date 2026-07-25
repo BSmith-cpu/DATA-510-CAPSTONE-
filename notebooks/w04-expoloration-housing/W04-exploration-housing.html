@@ -416,6 +416,7 @@ hpi_at &lt;- read.csv(
   header    = FALSE,
   col.names = c(&quot;metro_name&quot;, &quot;cbsa&quot;, &quot;yr&quot;, &quot;qtr&quot;, &quot;index_nsa&quot;, &quot;index_sa&quot;)
 ) %&gt;%
+  filter(cbsa != &quot;Area Code&quot;) %&gt;%
   mutate(
     index_nsa = as.numeric(str_remove_all(as.character(index_nsa), &quot;[()\\s]&quot;)),
     index_sa  = as.numeric(str_remove_all(as.character(index_sa),  &quot;[()\\s]&quot;))
@@ -437,12 +438,12 @@ hpi_at &lt;- read.csv(
 ## $ index_nsa  &lt;dbl&gt; 100.00, 99.85, 100.20, 99.83, 102.80, 100.71, 101.03, 103.5…
 ## $ index_sa   &lt;dbl&gt; 100.00, 100.31, 100.42, 98.80, 102.86, 101.13, 101.23, 102.…</code></pre>
 <pre class="r"><code>glimpse(hpi_at)</code></pre>
-<pre><code>## Rows: 83,640
+<pre><code>## Rows: 83,639
 ## Columns: 6
-## $ metro_name &lt;chr&gt; &quot;Metro&quot;, &quot;Abilene, TX&quot;, &quot;Abilene, TX&quot;, &quot;Abilene, TX&quot;, &quot;Abil…
-## $ cbsa       &lt;chr&gt; &quot;Area Code&quot;, &quot;10180&quot;, &quot;10180&quot;, &quot;10180&quot;, &quot;10180&quot;, &quot;10180&quot;, &quot;…
-## $ yr         &lt;chr&gt; &quot;Year&quot;, &quot;1975&quot;, &quot;1975&quot;, &quot;1975&quot;, &quot;1976&quot;, &quot;1976&quot;, &quot;1976&quot;, &quot;19…
-## $ qtr        &lt;chr&gt; &quot;Quarter&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;…
+## $ metro_name &lt;chr&gt; &quot;Abilene, TX&quot;, &quot;Abilene, TX&quot;, &quot;Abilene, TX&quot;, &quot;Abilene, TX&quot;,…
+## $ cbsa       &lt;chr&gt; &quot;10180&quot;, &quot;10180&quot;, &quot;10180&quot;, &quot;10180&quot;, &quot;10180&quot;, &quot;10180&quot;, &quot;1018…
+## $ yr         &lt;chr&gt; &quot;1975&quot;, &quot;1975&quot;, &quot;1975&quot;, &quot;1976&quot;, &quot;1976&quot;, &quot;1976&quot;, &quot;1976&quot;, &quot;19…
+## $ qtr        &lt;chr&gt; &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;1&quot;,…
 ## $ index_nsa  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 ## $ index_sa   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</code></pre>
 <p>General Summary of the Datasets</p>
@@ -771,12 +772,12 @@ hpi_at &lt;- read.csv(
 ## $ X2026.03.31 &lt;dbl&gt; 368117.7, 715991.6, 971239.9, 348890.6, 368086.2, 308928.9…
 ## $ X2026.04.30 &lt;dbl&gt; 368197.7, 718396.8, 969588.8, 349901.4, 366742.5, 308211.1…</code></pre>
 <pre class="r"><code>glimpse(hpi_at)</code></pre>
-<pre><code>## Rows: 83,640
+<pre><code>## Rows: 83,639
 ## Columns: 6
-## $ metro_name &lt;chr&gt; &quot;Metro&quot;, &quot;Abilene, TX&quot;, &quot;Abilene, TX&quot;, &quot;Abilene, TX&quot;, &quot;Abil…
-## $ cbsa       &lt;chr&gt; &quot;Area Code&quot;, &quot;10180&quot;, &quot;10180&quot;, &quot;10180&quot;, &quot;10180&quot;, &quot;10180&quot;, &quot;…
-## $ yr         &lt;chr&gt; &quot;Year&quot;, &quot;1975&quot;, &quot;1975&quot;, &quot;1975&quot;, &quot;1976&quot;, &quot;1976&quot;, &quot;1976&quot;, &quot;19…
-## $ qtr        &lt;chr&gt; &quot;Quarter&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;…
+## $ metro_name &lt;chr&gt; &quot;Abilene, TX&quot;, &quot;Abilene, TX&quot;, &quot;Abilene, TX&quot;, &quot;Abilene, TX&quot;,…
+## $ cbsa       &lt;chr&gt; &quot;10180&quot;, &quot;10180&quot;, &quot;10180&quot;, &quot;10180&quot;, &quot;10180&quot;, &quot;10180&quot;, &quot;1018…
+## $ yr         &lt;chr&gt; &quot;1975&quot;, &quot;1975&quot;, &quot;1975&quot;, &quot;1976&quot;, &quot;1976&quot;, &quot;1976&quot;, &quot;1976&quot;, &quot;19…
+## $ qtr        &lt;chr&gt; &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;1&quot;,…
 ## $ index_nsa  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
 ## $ index_sa   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</code></pre>
 <pre class="r"><code>glimpse(hpi_po)</code></pre>
@@ -1169,6 +1170,30 @@ zhvi_cbsa_lookup &lt;- zhvi_long %&gt;%
 
 message(&#39;ZHVI metros matched to CBSA:&#39;, nrow(zhvi_cbsa_lookup),&quot; / &quot;, n_distinct(zhvi_long$RegionName)) # 895/895</code></pre>
 <pre><code>## ZHVI metros matched to CBSA:895 / 895</code></pre>
+<pre class="r"><code>zhvi_quarterly &lt;- zhvi_qtr %&gt;%
+  left_join(cbsa_crosswalk %&gt;% mutate(cbsa = as.integer(cbsa)),
+            by = c(&quot;RegionName&quot; = &quot;census_name&quot;)) %&gt;%
+  mutate(cbsa = suppressWarnings(as.integer(cbsa))) %&gt;%
+  rename(year = yr)</code></pre>
+<pre class="r"><code>pop_quarterly &lt;- pop_features %&gt;%
+  mutate(cbsa = as.integer(cbsa)) %&gt;%
+  group_by(cbsa) %&gt;%
+  crossing(qtr = as.integer(1:4)) %&gt;%
+  ungroup()</code></pre>
+<pre class="r"><code>names(pop_quarterly)</code></pre>
+<pre><code>## [1] &quot;cbsa&quot;             &quot;metro_name&quot;       &quot;year&quot;             &quot;population&quot;      
+## [5] &quot;pop_yoy_growth&quot;   &quot;pop_velocity_3yr&quot; &quot;pop_accleration&quot;  &quot;qtr&quot;</code></pre>
+<pre class="r"><code>glimpse(pop_quarterly)</code></pre>
+<pre><code>## Rows: 24,648
+## Columns: 8
+## $ cbsa             &lt;int&gt; 10180, 10180, 10180, 10180, 10180, 10180, 10180, 1018…
+## $ metro_name       &lt;chr&gt; &quot;Abilene, TX&quot;, &quot;Abilene, TX&quot;, &quot;Abilene, TX&quot;, &quot;Abilene…
+## $ year             &lt;int&gt; 2010, 2010, 2010, 2010, 2011, 2011, 2011, 2011, 2012,…
+## $ population       &lt;dbl&gt; 165585, 165585, 165585, 165585, 166634, 166634, 16663…
+## $ pop_yoy_growth   &lt;dbl&gt; NA, NA, NA, NA, 0.0063351149, 0.0063351149, 0.0063351…
+## $ pop_velocity_3yr &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.011…
+## $ pop_accleration  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, -0.001486165, -0.0014…
+## $ qtr              &lt;int&gt; 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2,…</code></pre>
 <p>Four-Source Panel Join:</p>
 <p>This took us forever - we are combining all four data sources into a
 single quarterly panel dataset joined on CBSA code + year + quarter: *
@@ -1176,52 +1201,32 @@ HPI PO and HPI AT joined with full_join to retain all metro_quarter from
 either source * ZHVI quarterly averages attached via left_join *
 Population features broadcast across all four quarters of each year and
 attached via left_join</p>
-<pre class="r"><code>zhvi_quarterly &lt;- zhvi_qtr %&gt;%
-  left_join(cbsa_crosswalk %&gt;% mutate(cbsa = as.integer(cbsa)),
-            by = c(&quot;RegionName&quot; = &quot;census_name&quot;)) %&gt;%
-  mutate(cbsa = suppressWarnings(as.integer(cbsa)))
-
-pop_quarterly &lt;- pop_features %&gt;%
-  mutate(cbsa = as.integer(cbsa)) %&gt;%
-  group_by(cbsa) %&gt;%
-  crossing(qtr = as.integer(1:4)) %&gt;%
-  ungroup()
-
-names(pop_quarterly)</code></pre>
-<pre><code>## [1] &quot;cbsa&quot;             &quot;metro_name&quot;       &quot;year&quot;             &quot;population&quot;      
-## [5] &quot;pop_yoy_growth&quot;   &quot;pop_velocity_3yr&quot; &quot;pop_accleration&quot;  &quot;qtr&quot;</code></pre>
-<pre class="r"><code>zhvi_quarterly &lt;- zhvi_quarterly %&gt;%
-  rename(year = yr)
-
-hpi_po_clean &lt;- hpi_po %&gt;%
+<pre class="r"><code>hpi_po_clean &lt;- hpi_po %&gt;%
   rename(year = yr) %&gt;%
+  select(cbsa, year, qtr, hpi_po_sa = index_sa) %&gt;%
   mutate(cbsa = as.integer(cbsa), year = as.integer(year), qtr = as.integer(qtr))
 
 hpi_at_clean &lt;- hpi_at %&gt;%
   select(cbsa, metro_name, year = yr, qtr, hpi_at_sa = index_sa) %&gt;%
-  mutate(cbsa = as.integer(cbsa), year = as.integer(year), qtr = as.integer(qtr))</code></pre>
-<pre><code>## Warning: There were 3 warnings in `mutate()`.
-## The first warning was:
-## ℹ In argument: `cbsa = as.integer(cbsa)`.
-## Caused by warning:
-## ! NAs introduced by coercion
-## ℹ Run `dplyr::last_dplyr_warnings()` to see the 2 remaining warnings.</code></pre>
-<pre class="r"><code>merged_full &lt;- hpi_po_clean %&gt;%
-  full_join(hpi_at_clean,   by = c(&quot;cbsa&quot;, &quot;year&quot;, &quot;qtr&quot;)) %&gt;%
+  mutate(cbsa = as.integer(cbsa), year = as.integer(year), qtr = as.integer(qtr))
+
+merged_full &lt;- hpi_at_clean %&gt;%
+  full_join(hpi_po_clean, by = c(&quot;cbsa&quot;, &quot;year&quot;, &quot;qtr&quot;)) %&gt;%
   left_join(zhvi_quarterly, by = c(&quot;cbsa&quot;, &quot;year&quot;, &quot;qtr&quot;)) %&gt;%
-  left_join(pop_quarterly,  by = c(&quot;cbsa&quot;, &quot;year&quot;, &quot;qtr&quot;))
+  left_join(pop_quarterly,  by = c(&quot;cbsa&quot;, &quot;year&quot;, &quot;qtr&quot;)) %&gt;%
+  mutate(
+    index_sa = coalesce(hpi_at_sa, hpi_po_sa)
+  )
 
 glimpse(merged_full)</code></pre>
-<pre><code>## Rows: 83,640
-## Columns: 21
-## $ cbsa             &lt;int&gt; 10580, 10580, 10580, 10580, 10580, 10580, 10580, 1058…
-## $ metro_name.x     &lt;chr&gt; &quot;Albany-Schenectady-Troy, NY&quot;, &quot;Albany-Schenectady-Tr…
-## $ year             &lt;dbl&gt; 1991, 1991, 1991, 1991, 1992, 1992, 1992, 1992, 1993,…
-## $ qtr              &lt;int&gt; 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2,…
-## $ index_nsa        &lt;dbl&gt; 100.00, 99.85, 100.20, 99.83, 102.80, 100.71, 101.03,…
-## $ index_sa         &lt;dbl&gt; 100.00, 100.31, 100.42, 98.80, 102.86, 101.13, 101.23…
-## $ metro_name.y     &lt;chr&gt; &quot;Albany-Schenectady-Troy, NY&quot;, &quot;Albany-Schenectady-Tr…
-## $ hpi_at_sa        &lt;dbl&gt; 0.79, 0.72, 0.73, 0.72, 0.71, 0.71, 0.71, 0.71, 0.75,…
+<pre><code>## Rows: 83,639
+## Columns: 20
+## $ cbsa             &lt;int&gt; 10180, 10180, 10180, 10180, 10180, 10180, 10180, 1018…
+## $ metro_name.x     &lt;chr&gt; &quot;Abilene, TX&quot;, &quot;Abilene, TX&quot;, &quot;Abilene, TX&quot;, &quot;Abilene…
+## $ year             &lt;dbl&gt; 1975, 1975, 1975, 1976, 1976, 1976, 1976, 1977, 1977,…
+## $ qtr              &lt;int&gt; 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3,…
+## $ hpi_at_sa        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+## $ hpi_po_sa        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
 ## $ RegionID         &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
 ## $ RegionName       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
 ## $ RegionType       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
@@ -1230,13 +1235,22 @@ glimpse(merged_full)</code></pre>
 ## $ zhvi_yoy         &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
 ## $ zhvi_qoq         &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
 ## $ name_short       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ metro_name       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+## $ metro_name.y     &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
 ## $ population       &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
 ## $ pop_yoy_growth   &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
 ## $ pop_velocity_3yr &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ pop_accleration  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…</code></pre>
-<pre class="r"><code>message(&quot;Rows: &quot;, nrow(merged_full), &quot; | Metros: &quot;, n_distinct(merged_full$cbsa, na.rm = TRUE))</code></pre>
-<pre><code>## Rows: 83640 | Metros: 410</code></pre>
+## $ pop_accleration  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+## $ index_sa         &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…</code></pre>
+<p>Survivor Analysis:</p>
+<p>We are ensuring that we have a sufficiently panel for modeling. So,
+we are checking how many metros have at least 3 quarters of data across
+both HPI source and the population series from 2015 forward.</p>
+<pre class="r"><code>problem_rows_at &lt;- hpi_at %&gt;% filter(is.na(suppressWarnings(as.integer(cbsa))) &amp; !is.na(cbsa))
+print(unique(problem_rows_at$cbsa))</code></pre>
+<pre><code>## character(0)</code></pre>
+<pre class="r"><code>problem_rows_po &lt;- hpi_po %&gt;% filter(is.na(suppressWarnings(as.integer(cbsa))) &amp; !is.na(cbsa))
+print(unique(problem_rows_po$cbsa))</code></pre>
+<pre><code>## integer(0)</code></pre>
 <p>Survivor Analysis:</p>
 <p>We are ensuring that we have a sufficiently panel for modeling. So,
 we are checking how many metros have at least 3 quarters of data across
@@ -1248,26 +1262,23 @@ rolling features. We want a minimum of 60 metros.</p>
   filter(year &gt;= 2015) %&gt;%
   group_by(cbsa) %&gt;%
   summarise(
-    metro       = first(na.omit(metro_name)),
-    hpi_po_obs  = sum(!is.na(index_sa)),
-    hpi_at_obs  = sum(!is.na(hpi_at_sa)),
-    zhvi_obs    = sum(!is.na(zhvi_qtr)),
-    pop_obs     = sum(!is.na(population)),
-    .groups     = &quot;drop&quot;
+    metro    = first(na.omit(metro_name.x)),
+    hpi_obs  = sum(!is.na(index_sa)),
+    zhvi_obs = sum(!is.na(zhvi_qtr)),
+    pop_obs  = sum(!is.na(population)),
+    .groups  = &quot;drop&quot;
   ) %&gt;%
-  filter(hpi_po_obs &gt;= 3, hpi_at_obs &gt;= 3, pop_obs &gt;= 3)
+  filter(hpi_obs &gt;= 3, pop_obs &gt;= 3)
 
 cat(sprintf(&quot;Metros surviving full join (2015+): %d\n&quot;, nrow(survival)))</code></pre>
-<pre><code>## Metros surviving full join (2015+): 67</code></pre>
+<pre><code>## Metros surviving full join (2015+): 373</code></pre>
 <pre class="r"><code>cat(sprintf(&quot;%s 60+ metro target met\n&quot;, ifelse(nrow(survival) &gt;= 60, &quot;✅&quot;, &quot;❌&quot;)))</code></pre>
 <pre><code>## ✅ 60+ metro target met</code></pre>
 <p>We got 67 metro which met the criteria for inclusion in the
 analysis.</p>
 <p>Export merged_full to CSV</p>
 <pre class="r"><code># Export the merged_full dataframe to CSV
-write.csv(merged_full, 
-          &quot;/Users/brandonsmith/DATA-510-CAPSTONE--2/data/final_data/merged_full.csv&quot;,
-          row.names = FALSE)</code></pre>
+write.csv(merged_full, &quot;/Users/brandonsmith/DATA-510-CAPSTONE--2/DATA-510-CAPSTONE--3/data/final_data/merged_full.csv&quot;, row.names = FALSE)</code></pre>
 
 
 
