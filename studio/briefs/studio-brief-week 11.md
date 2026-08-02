@@ -1,6 +1,6 @@
 # Studio Brief — Week 11
 
-**From:** Manish 
+**From:** Manish
 **To:** Brandon  
 **Filed:** August 1, 2026  
 **For iteration starting:** August 1, 2026  
