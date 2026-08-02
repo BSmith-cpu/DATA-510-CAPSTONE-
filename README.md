@@ -86,98 +86,119 @@ One subsection per class week. The owner team commits the new section **before e
 
 ## Week 6
 
-**Iteration ending:** <date>
+**Iteration ending:** 6/15/2026
 **Milestone tag in focus:** `M2-data-summary`
 
 **Completed PBIs**
-- ...
+- Compeleted metro-level EDA profiles for Tampa, Austin, Boise
+- Resolved missing years in FHFA HPI series for Tampa
+- Finalized affordability-collapse target definition: price-to-income ratio >= 5.0 sustained over 3 consecutive years
 
 **Stakeholder response log**
-- ...
+- N/A
 
 **Plan for next iteration**
-- ...
+- Begin feature engineering: price-to-income ratio trends, affordability momentum score
 
 **Risks and impediments**
-- ...
+- ACS income daat lags by 1-2 years
+- Tampa metro boundary changed mid-series
 
 ## Week 7 -- Data summary milestone (M2)
 
-**Iteration ending:** <date>
+**Iteration ending:** 6/22/2026
 **Milestone tag in focus:** `M2-data-summary`
 
 **Completed PBIs**
-- ...
+- PBI-003: metro-leve EDA profiles finzlized for all three training cities
+- EDA summary notboook commited to repo with ggplot and ploty visulizations
+- Affordability-collapse target fully operationlized and applied to training cities
+- All five data sources joined through rmd via CBSA metro codes; merged_full.csv was exported
 
 **Stakeholder response log**
-- ...
+- N/A
 
 **Plan for next iteration**
-- ...
+- Begin PBI-004: Feature enineering pipline in python
+- Being identify candidate "at-risk" cities for model inference
 
 **Risks and impediments**
-- ...
+- Merged dataset has 14% missingness in permit data cross smaller metros
+- Feature leakage risk if collapse-year data bleeds into preditor window; need strict temporal cutoff enforcement
 
 **Retrospective (milestone boundary)**
-- What worked: ...
-- What did not: ...
-- One change for next iteration: ...
+- What worked: Joining function to CBSA codes were clean (expect for Tampa which needed a crosswalk)
+- What did not: initial affordability target purley on HPI growth was too blunt
+- One change for next iteration: Enforea strict train/test temporal split from the start of feature enineering, not at modeling time
 
 ## Week 8
 
-**Iteration ending:** <date>
+**Iteration ending:** 06/29/2026
 **Milestone tag in focus:** `M3-poster-draft`
 
 **Completed PBIs**
-- ...
+- PBI-004: Featyre engineering pipline built - price-to-income ratio, momentum score, population velocity
+- Population velocity features drafted and added to feature matrix
 
 **Stakeholder response log**
-- ...
+- N/A
 
 **Plan for next iteration**
-- ...
+- Train baseline XGBoost classifier on training cities
+- Run intial SHAP anaylsis on baseline model to verify feature signal
+- Begin outlining poster structure
 
 **Risks and impediments**
-- ...
+- Only three training cities limit generlizability; will document this as a known scopre constraint
+- Some permit data still sprase for Boise pre-2010 - using husing supply pressure proxy where needed
 
 ## Week 9
 
-**Iteration ending:** <date>
+**Iteration ending:** 07/06/2026
 **Milestone tag in focus:** `M3-poster-draft`
 
 **Completed PBIs**
-- ...
+- Baseline XGBoost model trainied on Tampa, Austin, Boise with leave-one-city cross-validation
+- SHAP summary plot generated - top feature: affordability momentum score, price-to-income ratio trend, population velocity
+- Candidate at-risk cities identifed for inference: Bozeman, MT
 
 **Stakeholder response log**
-- ...
+- N/A
 
 **Plan for next iteration**
-- ...
+- Finalize poster draft (intro, methods, results, etc)
+- Run model infrence on candidate at-risk cities
 
 **Risks and impediments**
-- ...
+- Poster layout needs to balance techincal depth with acccessibility for non-techincal stakeholders
 
 ## Week 10 -- Poster rough-draft milestone (M3)
 
-**Iteration ending:** <date>
+**Iteration ending:** 07/13/2026
 **Milestone tag in focus:** `M3-poster-draft`
 
 **Completed PBIs**
-- ...
+- Created a poster rough drafted centered at the problem definition, research question, stakeholder relevance, and initial EDA
+- Included Tampa, Austin, Boise as the project's training-city example.
+- Documented the proposed approach
 
 **Stakeholder response log**
-- ...
+- N/A
 
 **Plan for next iteration**
-- ...
+- Revise the poster based on instructor feedback
+- Continue target validation and begin only the feature-engineering work that is feasible within the reamining course timeline.
+- Organize notebooks, data documentation, and the repository so completed work is reproducible.
 
 **Risks and impediments**
-- ...
+- A complete predictie model may not be feasible after week 10
+- the affordabilty-collapase threshold requires transparent justification before it can support model training
+- Any results beyond desripitive analysis should be lableded premiliary until validated
 
 **Retrospective (milestone boundary)**
-- What worked: ...
-- What did not: ...
-- One change for next iteration: ...
+- What worked: Keep Tampa, Austin, and Boise as the consistent training-city examples gave the rpoject a clear analytical narrative
+- What did not: The orignial plan assumed modeling could begin before data harmozation and target definition were compelete.
+- One change for next iteration: Prioritize a polished, reporoducible EDA and transparent methodologyover inomplete model results.
 
 ## Week 11
 
