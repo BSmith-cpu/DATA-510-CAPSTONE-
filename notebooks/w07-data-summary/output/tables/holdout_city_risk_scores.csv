@@ -1,372 +1,372 @@
 cbsa,metro_name_x,risk_score
-14580,"Bozeman, MT",0.65553683
-38240,"Pinehurst-Southern Pines, NC",0.5993476
-11200,"Amherst Town-Northampton, MA",0.5961819
-47930,"Waterbury-Shelton, CT",0.5842977
-28880,"Kiryas Joel-Poughkeepsie-Newburgh, NY",0.5842861
-33500,"Minot, ND",0.5761967
-25740,"Helena, MT",0.57270753
-43640,"Slidell-Mandeville-Covington, LA",0.5723734
-30500,"Lexington Park, MD",0.56784505
-41780,"Sandusky, OH",0.5644643
-45900,"Traverse City, MI",0.5564653
-28450,"Kenosha, WI",0.55492026
-17410,"Cleveland, OH",0.55196446
-37140,"Paducah, KY-IL",0.52838105
-41940,"San Jose-Sunnyvale-Santa Clara, CA",0.47997534
-48680,"Wildwood-The Villages, FL",0.46288094
-39900,"Reno, NV",0.45634636
-42220,"Santa Rosa-Petaluma, CA",0.44182855
-14500,"Boulder, CO",0.43878657
-16180,"Carson City, NV",0.4383474
-27980,"Kahului-Wailuku, HI",0.436456
-13460,"Bend, OR",0.43639934
-27060,"Ithaca, NY",0.43441722
-29820,"Las Vegas-Henderson-North Las Vegas, NV",0.4334084
-34940,"Naples-Marco Island, FL",0.43100724
-19740,"Denver-Aurora-Centennial, CO",0.42985627
-42100,"Santa Cruz-Watsonville, CA",0.42943892
-25940,"Hilton Head Island-Bluffton-Port Royal, SC",0.42812383
-18700,"Corvallis, OR",0.4267096
-46700,"Vallejo, CA",0.42512947
-22660,"Fort Collins-Loveland, CO",0.42324707
-38940,"Port St. Lucie, FL",0.42291313
-44700,"Stockton-Lodi, CA",0.4220966
-17860,"Columbia, MO",0.42186317
-38900,"Portland-Vancouver-Hillsboro, OR-WA",0.4214064
-17660,"Coeur d'Alene, ID",0.42093456
-24300,"Grand Junction, CO",0.42091444
-41740,"San Diego-Chula Vista-Carlsbad, CA",0.42061856
-42700,"Sebring, FL",0.42055702
-42680,"Sebastian-Vero Beach-West Vero Corridor, FL",0.42040384
-23580,"Gainesville, GA",0.41990253
-25620,"Hattiesburg, MS",0.41973326
-42140,"Santa Fe, NM",0.4181488
-37460,"Panama City-Panama City Beach, FL",0.4177839
-24420,"Grants Pass, OR",0.4170044
-11460,"Ann Arbor, MI",0.4169735
-48300,"Wenatchee-East Wenatchee, WA",0.4165437
-39340,"Provo-Orem-Lehi, UT",0.4164127
-33700,"Modesto, CA",0.4160268
-34900,"Napa, CA",0.41573256
-40140,"Riverside-San Bernardino-Ontario, CA",0.41568455
-19430,"Dayton-Kettering-Beavercreek, OH",0.41560903
-39460,"Punta Gorda, FL",0.4154242
-17780,"College Station-Bryan, TX",0.41503167
-42200,"Santa Maria-Santa Barbara, CA",0.41489398
-35840,"North Port-Bradenton-Sarasota, FL",0.41483456
-39150,"Prescott Valley-Prescott, AZ",0.4148135
-36740,"Orlando-Kissimmee-Sanford, FL",0.41470832
-37340,"Palm Bay-Melbourne-Titusville, FL",0.4142983
-46060,"Tucson, AZ",0.4142128
-22420,"Flint, MI",0.41373074
-40900,"Sacramento-Roseville-Folsom, CA",0.41317856
-38060,"Phoenix-Mesa-Chandler, AZ",0.4130368
-32900,"Merced, CA",0.41277716
-42340,"Savannah, GA",0.41207558
-19140,"Dalton, GA",0.41181427
-23060,"Fort Wayne, IN",0.41174394
-30620,"Lima, OH",0.4112869
-46520,"Urban Honolulu, HI",0.41088045
-26420,"Houston-Pasadena-The Woodlands, TX",0.41056728
-39580,"Raleigh-Cary, NC",0.41034165
-24140,"Goldsboro, NC",0.4100788
-24260,"Grand Island, NE",0.4096286
-29460,"Lakeland-Winter Haven, FL",0.40952417
-15260,"Brunswick-St. Simons, GA",0.40856153
-24340,"Grand Rapids-Wyoming-Kentwood, MI",0.40840632
-36260,"Ogden, UT",0.40840232
-17140,"Cincinnati, OH-KY-IN",0.40837994
-30300,"Lewiston, ID-WA",0.4083721
-23540,"Gainesville, FL",0.4083688
-20940,"El Centro, CA",0.40834484
-49700,"Yuba City, CA",0.40828988
-41620,"Salt Lake City-Murray, UT",0.40774563
-41500,"Salinas, CA",0.4073366
-41420,"Salem, OR",0.40613842
-29020,"Kokomo, IN",0.40599996
-37100,"Oxnard-Thousand Oaks-Ventura, CA",0.40578252
-27180,"Jackson, TN",0.40572459
-31020,"Longview-Kelso, WA",0.40560305
-32780,"Medford, OR",0.40555322
-24780,"Greenville, NC",0.40512338
-31420,"Macon-Bibb County, GA",0.40511194
-22380,"Flagstaff, AZ",0.40506852
-24540,"Greeley, CO",0.40504226
-13380,"Bellingham, WA",0.40498373
-34740,"Muskegon-Norton Shores, MI",0.40449297
-18140,"Columbus, OH",0.4044112
-30860,"Logan, UT-ID",0.40418085
-25260,"Hanford-Corcoran, CA",0.40390295
-14740,"Bremerton-Silverdale-Port Orchard, WA",0.4037511
-47300,"Visalia, CA",0.4037279
-27620,"Jefferson City, MO",0.403638
-21660,"Eugene-Springfield, OR",0.40362632
-12540,"Bakersfield-Delano, CA",0.40356538
-33540,"Missoula, MT",0.4033121
-44220,"Springfield, OH",0.4032449
-39540,"Racine-Mount Pleasant, WI",0.40314388
-12020,"Athens-Clarke County, GA",0.40300688
-38540,"Pocatello, ID",0.40295446
-37860,"Pensacola-Ferry Pass-Brent, FL",0.40271506
-31540,"Madison, WI",0.40256017
-25060,"Gulfport-Biloxi, MS",0.40246984
-40420,"Rockford, IL",0.40211442
-36780,"Oshkosh-Neenah, WI",0.40200344
-44940,"Sumter, SC",0.40199655
-19300,"Daphne-Fairhope-Foley, AL",0.40196615
-18020,"Columbus, IN",0.40176156
-34620,"Muncie, IN",0.4012851
-40980,"Saginaw, MI",0.40106583
-29420,"Lake Havasu City-Kingman, AZ",0.40096602
-40580,"Rocky Mount, NC",0.40008217
-44100,"Springfield, IL",0.39973158
-17820,"Colorado Springs, CO",0.39944872
-33780,"Monroe, MI",0.39901084
-30020,"Lawton, OK",0.39857095
-26980,"Iowa City, IA",0.39831445
-12980,"Battle Creek, MI",0.39807206
-17900,"Columbia, SC",0.3978517
-48900,"Wilmington, NC",0.3978043
-16700,"Charleston-North Charleston, SC",0.39713758
-15980,"Cape Coral-Fort Myers, FL",0.39711443
-28100,"Kankakee, IL",0.39695853
-46220,"Tuscaloosa, AL",0.396898
-13900,"Bismarck, ND",0.3967957
-43100,"Sheboygan, WI",0.39668566
-10540,"Albany, OR",0.3966261
-21140,"Elkhart-Goshen, IN",0.39640537
-31900,"Mansfield, OH",0.39619288
-14540,"Bowling Green, KY",0.39618087
-20020,"Dothan, AL",0.39594656
-29620,"Lansing-East Lansing, MI",0.3959368
-24660,"Greensboro-High Point, NC",0.39588815
-29700,"Laredo, TX",0.39588317
-33460,"Minneapolis-St. Paul-Bloomington, MN-WI",0.39586106
-20500,"Durham-Chapel Hill, NC",0.39585203
-41100,"St. George, UT",0.39562714
-27140,"Jackson, MS",0.39552328
-25220,"Hammond, LA",0.39498457
-26900,"Indianapolis-Carmel-Greenwood, IN",0.39491704
-42020,"San Luis Obispo-Paso Robles, CA",0.39488685
-30700,"Lincoln, NE",0.39483735
-34580,"Mount Vernon-Anacortes, WA",0.39457852
-29940,"Lawrence, KS",0.3944401
-27500,"Janesville-Beloit, WI",0.39425758
-16740,"Charlotte-Concord-Gastonia, NC-SC",0.3942259
-49740,"Yuma, AZ",0.3941976
-30460,"Lexington-Fayette, KY",0.39391243
-45780,"Toledo, OH",0.39389938
-29100,"La Crosse-Onalaska, WI-MN",0.39379138
-43580,"Sioux City, IA-NE-SD",0.3928753
-23420,"Fresno, CA",0.3926607
-26820,"Idaho Falls, ID",0.39263943
-27100,"Jackson, MI",0.39257297
-47220,"Vineland, NJ",0.3925239
-19500,"Decatur, IL",0.39206415
-24580,"Green Bay, WI",0.39202017
-33340,"Milwaukee-Waukesha, WI",0.39176068
-48620,"Wichita, KS",0.39169762
-19660,"Deltona-Daytona Beach-Ormond Beach, FL",0.39142397
-47580,"Warner Robins, GA",0.39124057
-44060,"Spokane-Spokane Valley, WA",0.3901976
-10740,"Albuquerque, NM",0.38994592
-26620,"Huntsville, AL",0.38973564
-26300,"Hot Springs, AR",0.3897047
-13020,"Bay City, MI",0.3896263
-10420,"Akron, OH",0.38957736
-12260,"Augusta-Richmond County, GA-SC",0.38942087
-33860,"Montgomery, AL",0.38892436
-33260,"Midland, TX",0.3885845
-41180,"St. Louis, MO-IL",0.3885679
-33140,"Michigan City-La Porte, IN",0.38851625
-23460,"Gadsden, AL",0.38821507
-27260,"Jacksonville, FL",0.38818488
-39300,"Providence-Warwick, RI-MA",0.38812912
-21780,"Evansville, IN",0.38808727
-26140,"Homosassa Springs, FL",0.3879766
-11700,"Asheville, NC",0.38767123
-39380,"Pueblo, CO",0.38746503
-49340,"Worcester, MA",0.38746297
-39740,"Reading, PA",0.3872763
-15500,"Burlington, NC",0.38708416
-10500,"Albany, GA",0.38704073
-21500,"Erie, PA",0.38689163
-38340,"Pittsfield, MA",0.3866408
-13820,"Birmingham, AL",0.38663772
-45220,"Tallahassee, FL",0.38659588
-45940,"Trenton-Princeton, NJ",0.3865708
-31140,"Louisville/Jefferson County, KY-IN",0.38638434
-46140,"Tulsa, OK",0.38619104
-41700,"San Antonio-New Braunfels, TX",0.3859793
-24860,"Greenville-Anderson-Greer, SC",0.38593242
-24500,"Great Falls, MT",0.3858055
-49620,"York-Hanover, PA",0.38573593
-17020,"Chico, CA",0.38571194
-22180,"Fayetteville, NC",0.3855767
-36100,"Ocala, FL",0.38546854
-29740,"Las Cruces, NM",0.38508743
-19340,"Davenport-Moline-Rock Island, IA-IL",0.3849376
-37900,"Peoria, IL",0.38482785
-49420,"Yakima, WA",0.38472077
-12700,"Barnstable Town, MA",0.384675
-37620,"Parkersburg-Vienna, WV",0.38427946
-43780,"South Bend-Mishawaka, IN-MI",0.38422397
-15940,"Canton-Massillon, OH",0.38414204
-36500,"Olympia-Lacey-Tumwater, WA",0.38387507
-33740,"Monroe, LA",0.38383007
-32820,"Memphis, TN-MS-AR",0.3837587
-30140,"Lebanon, PA",0.38371265
-18580,"Corpus Christi, TX",0.38354778
-14020,"Bloomington, IN",0.38344356
-34980,"Nashville-Davidson--Murfreesboro--Franklin, TN",0.38325787
-47460,"Walla Walla, WA",0.3831449
-28940,"Knoxville, TN",0.38300037
-39820,"Redding, CA",0.3829987
-29200,"Lafayette-West Lafayette, IN",0.38294873
-29540,"Lancaster, PA",0.38267016
-15540,"Burlington-South Burlington, VT",0.38251737
-13780,"Binghamton, NY",0.3824367
-12100,"Atlantic City-Hammonton, NJ",0.3824245
-13220,"Beckley, WV",0.38231543
-43300,"Sherman-Denison, TX",0.38227817
-48700,"Williamsport, PA",0.38223475
-43900,"Spartanburg, SC",0.38215077
-43620,"Sioux Falls, SD-MN",0.38188538
-16540,"Chambersburg, PA",0.38179013
-28140,"Kansas City, MO-KS",0.38176018
-14010,"Bloomington, IL",0.38171804
-46300,"Twin Falls, ID",0.3816508
-12220,"Auburn-Opelika, AL",0.3811121
-10180,"Abilene, TX",0.38111135
-25860,"Hickory-Lenoir-Morganton, NC",0.38104844
-25980,"Hinesville, GA",0.3809779
-36980,"Owensboro, KY",0.38094097
-44140,"Springfield, MA",0.38077864
-22220,"Fayetteville-Springdale-Rogers, AR",0.3806328
-11260,"Anchorage, AK",0.38059384
-43340,"Shreveport-Bossier City, LA",0.38052782
-36420,"Oklahoma City, OK",0.38028607
-45500,"Texarkana, TX-AR",0.38027596
-27900,"Joplin, MO-KS",0.37993932
-13980,"Blacksburg-Christiansburg-Radford, VA",0.37982234
-44300,"State College, PA",0.37980324
-20100,"Dover, DE",0.37965545
-10780,"Alexandria, LA",0.37960097
-17980,"Columbus, GA-AL",0.37957644
-22500,"Florence, SC",0.37950397
-16300,"Cedar Rapids, IA",0.37935555
-49660,"Youngstown-Warren, OH",0.37928468
-18880,"Crestview-Fort Walton Beach-Destin, FL",0.37912562
-16620,"Charleston, WV",0.37905997
-48660,"Wichita Falls, TX",0.37900203
-40380,"Rochester, NY",0.37892148
-15180,"Brownsville-Harlingen, TX",0.37887672
-40660,"Rome, GA",0.37884325
-33220,"Midland, MI",0.37884203
-17420,"Cleveland, TN",0.3786837
-19460,"Decatur, AL",0.37864769
-49020,"Winchester, VA-WV",0.3786471
-12940,"Baton Rouge, LA",0.3786057
-41060,"St. Cloud, MN",0.37843645
-33660,"Mobile, AL",0.3783594
-35980,"Norwich-New London-Willimantic, CT",0.37821376
-25180,"Hagerstown-Martinsburg, MD-WV",0.37807825
-21060,"Elizabethtown, KY",0.3779589
-20220,"Dubuque, IA",0.37786135
-35660,"Niles, MI",0.377857
-10900,"Allentown-Bethlehem-Easton, PA-NJ",0.3777909
-44180,"Springfield, MO",0.3775805
-48140,"Wausau, WI",0.37755558
-49180,"Winston-Salem, NC",0.3774647
-21820,"Fairbanks-College, AK",0.3773859
-11180,"Ames, IA",0.3766123
-11540,"Appleton, WI",0.37647635
-45060,"Syracuse, NY",0.3764128
-47020,"Victoria, TX",0.37628132
-15380,"Buffalo-Cheektowaga, NY",0.376213
-21300,"Elmira, NY",0.3759768
-40060,"Richmond, VA",0.3759535
-25420,"Harrisburg-Carlisle, PA",0.37587774
-27340,"Jacksonville, NC",0.37563193
-31700,"Manchester-Nashua, NH",0.37560055
-28020,"Kalamazoo-Portage, MI",0.3751099
-11100,"Amarillo, TX",0.37450334
-11500,"Anniston-Oxford, AL",0.3744084
-28740,"Kingston, NY",0.3740838
-36540,"Omaha, NE-IA",0.3737505
-34820,"Myrtle Beach-Conway-North Myrtle Beach, SC",0.3737265
-12580,"Baltimore-Columbia-Towson, MD",0.3736322
-38860,"Portland-South Portland, ME",0.3734695
-30780,"Little Rock-North Little Rock-Conway, AR",0.37343973
-35380,"New Orleans-Metairie, LA",0.37317586
-14860,"Bridgeport-Stamford-Danbury, CT",0.37313157
-43420,"Sierra Vista-Douglas, AZ",0.37310377
-41140,"St. Joseph, MO-KS",0.37296006
-41660,"San Angelo, TX",0.37294465
-16220,"Casper, WY",0.37248954
-27860,"Jonesboro, AR",0.37234098
-20740,"Eau Claire, WI",0.37229264
-41540,"Salisbury, MD",0.37222132
-22540,"Fond du Lac, WI",0.37195724
-48260,"Weirton-Steubenville, WV-OH",0.3717453
-40220,"Roanoke, VA",0.3717414
-22900,"Fort Smith, AR-OK",0.3714399
-12620,"Bangor, ME",0.37067795
-34100,"Morristown, TN",0.370628
-16940,"Cheyenne, WY",0.37059137
-16820,"Charlottesville, VA",0.37032983
-40340,"Rochester, MN",0.3703035
-24220,"Grand Forks, ND-MN",0.36995837
-22140,"Farmington, NM",0.36991346
-25540,"Hartford-West Hartford-East Hartford, CT",0.36991313
-47260,"Virginia Beach-Chesapeake-Norfolk, VA-NC",0.36926147
-10580,"Albany-Schenectady-Troy, NY",0.3692425
-35300,"New Haven, CT",0.36919844
-45820,"Topeka, KS",0.3686073
-27740,"Johnson City, TN",0.36859995
-16860,"Chattanooga, TN-GA",0.3685846
-19780,"Des Moines-West Des Moines, IA",0.3682806
-30980,"Longview, TX",0.36827046
-29180,"Lafayette, LA",0.36805484
-31860,"Mankato, MN",0.36786804
-30340,"Lewiston-Auburn, ME",0.36765674
-39660,"Rapid City, SD",0.36723346
-21340,"El Paso, TX",0.36681265
-20260,"Duluth, MN-WI",0.3667084
-28700,"Kingsport-Bristol, TN-VA",0.36612403
-46660,"Valdosta, GA",0.36551052
-28420,"Kennewick-Richland, WA",0.36518857
-23900,"Gettysburg, PA",0.36517692
-47380,"Waco, TX",0.3646569
-48060,"Watertown-Fort Drum, NY",0.36455345
-16580,"Champaign-Urbana, IL",0.36443356
-13140,"Beaumont-Port Arthur, TX",0.364329
-26380,"Houma-Bayou Cane-Thibodaux, LA",0.36388373
-13740,"Billings, MT",0.36368924
-42540,"Scranton--Wilkes-Barre, PA",0.36283186
-25500,"Harrisonburg, VA",0.36283186
-16020,"Cape Girardeau, MO-IL",0.3627384
-44420,"Staunton-Stuarts Draft, VA",0.36232954
-11020,"Altoona, PA",0.3608002
-38300,"Pittsburgh, PA",0.36036587
-17300,"Clarksville, TN-KY",0.35959706
-32580,"McAllen-Edinburg-Mission, TX",0.35948113
-46540,"Utica-Rome, NY",0.35896116
-46340,"Tyler, TX",0.35896084
-47940,"Waterloo-Cedar Falls, IA",0.35847297
-22020,"Fargo, ND-MN",0.35824963
-36220,"Odessa, TX",0.35692695
-45460,"Terre Haute, IN",0.3565354
-31180,"Lubbock, TX",0.35409877
-31340,"Lynchburg, VA",0.35400355
-22520,"Florence-Muscle Shoals, AL",0.35345647
-29340,"Lake Charles, LA",0.35265177
-28660,"Killeen-Temple, TX",0.35078663
-26580,"Huntington-Ashland, WV-KY-OH",0.3478745
-27780,"Johnstown, PA",0.347141
-31740,"Manhattan, KS",0.3466959
-24020,"Glens Falls, NY",0.34642464
-34060,"Morgantown, WV",0.32796395
-48540,"Wheeling, WV-OH",0.32468
-21420,"Enid, OK",0.32161716
+14580,"Bozeman, MT",0.55308735
+43640,"Slidell-Mandeville-Covington, LA",0.49530682
+25740,"Helena, MT",0.48889548
+45900,"Traverse City, MI",0.48185655
+11200,"Amherst Town-Northampton, MA",0.47414455
+33500,"Minot, ND",0.46464851
+37140,"Paducah, KY-IL",0.46347493
+38240,"Pinehurst-Southern Pines, NC",0.45905858
+41780,"Sandusky, OH",0.45271283
+17410,"Cleveland, OH",0.44091392
+28450,"Kenosha, WI",0.4404675
+28880,"Kiryas Joel-Poughkeepsie-Newburgh, NY",0.43395358
+47930,"Waterbury-Shelton, CT",0.42571518
+30500,"Lexington Park, MD",0.4185013
+13460,"Bend, OR",0.37546647
+17660,"Coeur d'Alene, ID",0.36271587
+33540,"Missoula, MT",0.3600918
+38540,"Pocatello, ID",0.359357
+38060,"Phoenix-Mesa-Chandler, AZ",0.35613328
+29420,"Lake Havasu City-Kingman, AZ",0.35525012
+29820,"Las Vegas-Henderson-North Las Vegas, NV",0.3529472
+41940,"San Jose-Sunnyvale-Santa Clara, CA",0.35282284
+19660,"Deltona-Daytona Beach-Ormond Beach, FL",0.3523838
+22380,"Flagstaff, AZ",0.35150135
+26820,"Idaho Falls, ID",0.35141048
+23580,"Gainesville, GA",0.35100338
+27980,"Kahului-Wailuku, HI",0.35077763
+46300,"Twin Falls, ID",0.35064518
+14500,"Boulder, CO",0.3504619
+34940,"Naples-Marco Island, FL",0.34966546
+47380,"Waco, TX",0.34944683
+39900,"Reno, NV",0.34942794
+36260,"Ogden, UT",0.3493695
+32900,"Merced, CA",0.34909642
+36740,"Orlando-Kissimmee-Sanford, FL",0.34849802
+44700,"Stockton-Lodi, CA",0.34827447
+29460,"Lakeland-Winter Haven, FL",0.34782565
+39460,"Punta Gorda, FL",0.34775564
+37340,"Palm Bay-Melbourne-Titusville, FL",0.34769738
+35840,"North Port-Bradenton-Sarasota, FL",0.34754276
+33700,"Modesto, CA",0.34745595
+42680,"Sebastian-Vero Beach-West Vero Corridor, FL",0.34706593
+40140,"Riverside-San Bernardino-Ontario, CA",0.34680188
+42200,"Santa Maria-Santa Barbara, CA",0.3463617
+44060,"Spokane-Spokane Valley, WA",0.34621418
+21660,"Eugene-Springfield, OR",0.3462023
+15980,"Cape Coral-Fort Myers, FL",0.34610438
+39150,"Prescott Valley-Prescott, AZ",0.34548506
+42220,"Santa Rosa-Petaluma, CA",0.34515968
+41500,"Salinas, CA",0.34501404
+18700,"Corvallis, OR",0.3446562
+39340,"Provo-Orem-Lehi, UT",0.34428582
+38940,"Port St. Lucie, FL",0.34409043
+20940,"El Centro, CA",0.34392533
+39580,"Raleigh-Cary, NC",0.34357065
+17820,"Colorado Springs, CO",0.3432223
+41420,"Salem, OR",0.34308445
+11700,"Asheville, NC",0.34301355
+43300,"Sherman-Denison, TX",0.3428782
+25940,"Hilton Head Island-Bluffton-Port Royal, SC",0.34187979
+30860,"Logan, UT-ID",0.3413492
+46220,"Tuscaloosa, AL",0.34120688
+46700,"Vallejo, CA",0.34113997
+48680,"Wildwood-The Villages, FL",0.34109965
+34980,"Nashville-Davidson--Murfreesboro--Franklin, TN",0.34084356
+22660,"Fort Collins-Loveland, CO",0.3408235
+10540,"Albany, OR",0.34069252
+24340,"Grand Rapids-Wyoming-Kentwood, MI",0.3406906
+22420,"Flint, MI",0.34061435
+34580,"Mount Vernon-Anacortes, WA",0.3403848
+24500,"Great Falls, MT",0.33987537
+28420,"Kennewick-Richland, WA",0.33986223
+16180,"Carson City, NV",0.33953544
+27260,"Jacksonville, FL",0.3394701
+41100,"St. George, UT",0.33939436
+32780,"Medford, OR",0.33912972
+18140,"Columbus, OH",0.3385782
+42100,"Santa Cruz-Watsonville, CA",0.33835107
+15380,"Buffalo-Cheektowaga, NY",0.33812195
+23420,"Fresno, CA",0.3379214
+18880,"Crestview-Fort Walton Beach-Destin, FL",0.33778512
+41620,"Salt Lake City-Murray, UT",0.33775696
+16940,"Cheyenne, WY",0.33743325
+24540,"Greeley, CO",0.33732015
+38900,"Portland-Vancouver-Hillsboro, OR-WA",0.3371655
+46520,"Urban Honolulu, HI",0.33682418
+28140,"Kansas City, MO-KS",0.3359562
+46060,"Tucson, AZ",0.33593735
+26300,"Hot Springs, AR",0.33571488
+28020,"Kalamazoo-Portage, MI",0.3355722
+31020,"Longview-Kelso, WA",0.3355347
+33460,"Minneapolis-St. Paul-Bloomington, MN-WI",0.33537763
+47220,"Vineland, NJ",0.33533007
+42140,"Santa Fe, NM",0.3351973
+39540,"Racine-Mount Pleasant, WI",0.33515966
+37860,"Pensacola-Ferry Pass-Brent, FL",0.33505473
+12020,"Athens-Clarke County, GA",0.3350233
+29700,"Laredo, TX",0.33494994
+13740,"Billings, MT",0.33483067
+41700,"San Antonio-New Braunfels, TX",0.33467224
+40900,"Sacramento-Roseville-Folsom, CA",0.3344198
+16700,"Charleston-North Charleston, SC",0.33440158
+26140,"Homosassa Springs, FL",0.33423713
+39380,"Pueblo, CO",0.33403972
+48300,"Wenatchee-East Wenatchee, WA",0.3340203
+31900,"Mansfield, OH",0.33398324
+24260,"Grand Island, NE",0.3336243
+47580,"Warner Robins, GA",0.33334333
+14740,"Bremerton-Silverdale-Port Orchard, WA",0.33298424
+11460,"Ann Arbor, MI",0.3327968
+36100,"Ocala, FL",0.3327761
+22220,"Fayetteville-Springdale-Rogers, AR",0.3326805
+12540,"Bakersfield-Delano, CA",0.33259785
+20500,"Durham-Chapel Hill, NC",0.3323463
+24300,"Grand Junction, CO",0.3322815
+17020,"Chico, CA",0.33205912
+13380,"Bellingham, WA",0.33173376
+14540,"Bowling Green, KY",0.3316784
+25220,"Hammond, LA",0.33161178
+39820,"Redding, CA",0.33154437
+34820,"Myrtle Beach-Conway-North Myrtle Beach, SC",0.33153015
+19300,"Daphne-Fairhope-Foley, AL",0.33132187
+43620,"Sioux Falls, SD-MN",0.33121392
+36420,"Oklahoma City, OK",0.33106992
+37100,"Oxnard-Thousand Oaks-Ventura, CA",0.33098376
+43100,"Sheboygan, WI",0.33093828
+39660,"Rapid City, SD",0.33087412
+19740,"Denver-Aurora-Centennial, CO",0.33080631
+29020,"Kokomo, IN",0.33079723
+17780,"College Station-Bryan, TX",0.33036345
+29620,"Lansing-East Lansing, MI",0.33034742
+15260,"Brunswick-St. Simons, GA",0.33011958
+30460,"Lexington-Fayette, KY",0.32997552
+41660,"San Angelo, TX",0.32980388
+24860,"Greenville-Anderson-Greer, SC",0.32949176
+24140,"Goldsboro, NC",0.32944453
+29200,"Lafayette-West Lafayette, IN",0.32931387
+43580,"Sioux City, IA-NE-SD",0.32927758
+37460,"Panama City-Panama City Beach, FL",0.3292146
+27100,"Jackson, MI",0.32914189
+47300,"Visalia, CA",0.3290911
+26420,"Houston-Pasadena-The Woodlands, TX",0.32894403
+30700,"Lincoln, NE",0.32855523
+23540,"Gainesville, FL",0.32847384
+42020,"San Luis Obispo-Paso Robles, CA",0.32828087
+36540,"Omaha, NE-IA",0.3281851
+16860,"Chattanooga, TN-GA",0.32799184
+46340,"Tyler, TX",0.32799152
+27500,"Janesville-Beloit, WI",0.32791016
+28740,"Kingston, NY",0.32789218
+15940,"Canton-Massillon, OH",0.32781202
+33260,"Midland, TX",0.3276104
+40980,"Saginaw, MI",0.32745048
+27740,"Johnson City, TN",0.3273584
+40340,"Rochester, MN",0.32729828
+13980,"Blacksburg-Christiansburg-Radford, VA",0.32710704
+40380,"Rochester, NY",0.3270552
+25260,"Hanford-Corcoran, CA",0.32690778
+41740,"San Diego-Chula Vista-Carlsbad, CA",0.32684484
+28940,"Knoxville, TN",0.32683837
+27060,"Ithaca, NY",0.32679135
+34900,"Napa, CA",0.3267895
+30300,"Lewiston, ID-WA",0.32672095
+12220,"Auburn-Opelika, AL",0.3266333
+16740,"Charlotte-Concord-Gastonia, NC-SC",0.32649016
+19140,"Dalton, GA",0.32644296
+27620,"Jefferson City, MO",0.32566372
+15500,"Burlington, NC",0.32560536
+34740,"Muskegon-Norton Shores, MI",0.32554176
+30780,"Little Rock-North Little Rock-Conway, AR",0.32548964
+18020,"Columbus, IN",0.3254021
+37620,"Parkersburg-Vienna, WV",0.32537296
+36780,"Oshkosh-Neenah, WI",0.32533363
+32820,"Memphis, TN-MS-AR",0.32530454
+49700,"Yuba City, CA",0.32528013
+36500,"Olympia-Lacey-Tumwater, WA",0.32522696
+31540,"Madison, WI",0.3250408
+31140,"Louisville/Jefferson County, KY-IN",0.32485357
+13820,"Birmingham, AL",0.32475933
+19430,"Dayton-Kettering-Beavercreek, OH",0.32462895
+16220,"Casper, WY",0.32459623
+12700,"Barnstable Town, MA",0.32449135
+45780,"Toledo, OH",0.32431522
+26900,"Indianapolis-Carmel-Greenwood, IN",0.32425982
+49420,"Yakima, WA",0.32424334
+39300,"Providence-Warwick, RI-MA",0.3240942
+24420,"Grants Pass, OR",0.32403436
+40660,"Rome, GA",0.32399195
+21820,"Fairbanks-College, AK",0.323921
+47460,"Walla Walla, WA",0.32390717
+17300,"Clarksville, TN-KY",0.32390106
+49740,"Yuma, AZ",0.3238798
+29540,"Lancaster, PA",0.32387677
+27140,"Jackson, MS",0.3237856
+23060,"Fort Wayne, IN",0.32363382
+42340,"Savannah, GA",0.32360196
+44140,"Springfield, MA",0.3235765
+33780,"Monroe, MI",0.32353896
+21780,"Evansville, IN",0.32315955
+48260,"Weirton-Steubenville, WV-OH",0.32305685
+21140,"Elkhart-Goshen, IN",0.32304174
+29100,"La Crosse-Onalaska, WI-MN",0.32303423
+28660,"Killeen-Temple, TX",0.32282254
+33740,"Monroe, LA",0.3226188
+32580,"McAllen-Edinburg-Mission, TX",0.32261384
+13900,"Bismarck, ND",0.32253578
+43780,"South Bend-Mishawaka, IN-MI",0.32224548
+40420,"Rockford, IL",0.32224277
+33220,"Midland, MI",0.322218
+40580,"Rocky Mount, NC",0.32215005
+27180,"Jackson, TN",0.32204553
+19340,"Davenport-Moline-Rock Island, IA-IL",0.3220345
+44300,"State College, PA",0.32198587
+24580,"Green Bay, WI",0.32197884
+44220,"Springfield, OH",0.32187653
+15540,"Burlington-South Burlington, VT",0.32185867
+30020,"Lawton, OK",0.3218281
+45220,"Tallahassee, FL",0.32176164
+31700,"Manchester-Nashua, NH",0.3216812
+34100,"Morristown, TN",0.32148343
+29340,"Lake Charles, LA",0.32138193
+20740,"Eau Claire, WI",0.32113957
+45940,"Trenton-Princeton, NJ",0.3209634
+11100,"Amarillo, TX",0.32081336
+49340,"Worcester, MA",0.3207683
+42700,"Sebring, FL",0.32066476
+48900,"Wilmington, NC",0.3206274
+44180,"Springfield, MO",0.32056582
+47260,"Virginia Beach-Chesapeake-Norfolk, VA-NC",0.32054716
+25620,"Hattiesburg, MS",0.32051027
+38860,"Portland-South Portland, ME",0.3204744
+22540,"Fond du Lac, WI",0.31976926
+10420,"Akron, OH",0.31956762
+45500,"Texarkana, TX-AR",0.3195058
+33140,"Michigan City-La Porte, IN",0.31901076
+19460,"Decatur, AL",0.31894776
+21300,"Elmira, NY",0.31890875
+43420,"Sierra Vista-Douglas, AZ",0.31888968
+24780,"Greenville, NC",0.31883633
+33340,"Milwaukee-Waukesha, WI",0.3188351
+13220,"Beckley, WV",0.31882402
+23460,"Gadsden, AL",0.31881085
+16820,"Charlottesville, VA",0.31879222
+18580,"Corpus Christi, TX",0.3182983
+41060,"St. Cloud, MN",0.31826857
+17420,"Cleveland, TN",0.31810665
+31420,"Macon-Bibb County, GA",0.31809738
+48660,"Wichita Falls, TX",0.31796345
+29180,"Lafayette, LA",0.31760916
+49660,"Youngstown-Warren, OH",0.31742612
+20260,"Duluth, MN-WI",0.31728122
+48140,"Wausau, WI",0.31727663
+13020,"Bay City, MI",0.3172375
+41140,"St. Joseph, MO-KS",0.31722692
+10900,"Allentown-Bethlehem-Easton, PA-NJ",0.31658822
+35380,"New Orleans-Metairie, LA",0.31657988
+45060,"Syracuse, NY",0.3164513
+24660,"Greensboro-High Point, NC",0.31633735
+10740,"Albuquerque, NM",0.3162695
+17900,"Columbia, SC",0.31626683
+28100,"Kankakee, IL",0.31626436
+44100,"Springfield, IL",0.31621718
+43900,"Spartanburg, SC",0.31620964
+49180,"Winston-Salem, NC",0.31619665
+28700,"Kingsport-Bristol, TN-VA",0.31603464
+49020,"Winchester, VA-WV",0.3159855
+27900,"Joplin, MO-KS",0.31590307
+11260,"Anchorage, AK",0.31549704
+11540,"Appleton, WI",0.31542072
+30140,"Lebanon, PA",0.3153352
+37900,"Peoria, IL",0.31476778
+19500,"Decatur, IL",0.31472385
+20220,"Dubuque, IA",0.31465468
+16580,"Champaign-Urbana, IL",0.31460354
+14020,"Bloomington, IN",0.31449738
+48620,"Wichita, KS",0.31440932
+12940,"Baton Rouge, LA",0.31438765
+26620,"Huntsville, AL",0.31432548
+22020,"Fargo, ND-MN",0.3143016
+35660,"Niles, MI",0.31429946
+48700,"Williamsport, PA",0.31426883
+38300,"Pittsburgh, PA",0.31409714
+49620,"York-Hanover, PA",0.3137875
+25420,"Harrisburg-Carlisle, PA",0.31374243
+21060,"Elizabethtown, KY",0.31351253
+17140,"Cincinnati, OH-KY-IN",0.31350377
+17860,"Columbia, MO",0.31329876
+14010,"Bloomington, IL",0.3132217
+33860,"Montgomery, AL",0.31317693
+33660,"Mobile, AL",0.3131351
+30620,"Lima, OH",0.3130887
+40060,"Richmond, VA",0.31307057
+29940,"Lawrence, KS",0.31303942
+14860,"Bridgeport-Stamford-Danbury, CT",0.31287098
+10500,"Albany, GA",0.31273073
+25860,"Hickory-Lenoir-Morganton, NC",0.31262895
+25060,"Gulfport-Biloxi, MS",0.31256196
+26980,"Iowa City, IA",0.31199652
+39740,"Reading, PA",0.3119608
+12980,"Battle Creek, MI",0.31174773
+44940,"Sumter, SC",0.3114571
+40220,"Roanoke, VA",0.31097063
+22180,"Fayetteville, NC",0.31090775
+25540,"Hartford-West Hartford-East Hartford, CT",0.3106812
+13140,"Beaumont-Port Arthur, TX",0.31025946
+36980,"Owensboro, KY",0.31022903
+10580,"Albany-Schenectady-Troy, NY",0.3102241
+13780,"Binghamton, NY",0.31020886
+41180,"St. Louis, MO-IL",0.31003788
+11500,"Anniston-Oxford, AL",0.30997545
+48540,"Wheeling, WV-OH",0.309618
+17980,"Columbus, GA-AL",0.30917722
+25180,"Hagerstown-Martinsburg, MD-WV",0.30896088
+20100,"Dover, DE",0.30867097
+36220,"Odessa, TX",0.30863452
+12100,"Atlantic City-Hammonton, NJ",0.30837512
+47940,"Waterloo-Cedar Falls, IA",0.3083099
+15180,"Brownsville-Harlingen, TX",0.30827352
+20020,"Dothan, AL",0.30825385
+11180,"Ames, IA",0.30781162
+21340,"El Paso, TX",0.30777243
+22900,"Fort Smith, AR-OK",0.3074348
+43340,"Shreveport-Bossier City, LA",0.30723682
+35300,"New Haven, CT",0.3071563
+25500,"Harrisonburg, VA",0.30684
+16540,"Chambersburg, PA",0.3068089
+29740,"Las Cruces, NM",0.30634487
+24220,"Grand Forks, ND-MN",0.30572432
+12260,"Augusta-Richmond County, GA-SC",0.30531013
+35980,"Norwich-New London-Willimantic, CT",0.30514696
+22140,"Farmington, NM",0.3047325
+10780,"Alexandria, LA",0.30462053
+27860,"Jonesboro, AR",0.30458525
+38340,"Pittsfield, MA",0.30428025
+19780,"Des Moines-West Des Moines, IA",0.30336133
+31740,"Manhattan, KS",0.3032792
+30340,"Lewiston-Auburn, ME",0.30300355
+48060,"Watertown-Fort Drum, NY",0.3029688
+22500,"Florence, SC",0.30290535
+21500,"Erie, PA",0.3028471
+31180,"Lubbock, TX",0.30271396
+16300,"Cedar Rapids, IA",0.30265775
+12580,"Baltimore-Columbia-Towson, MD",0.3024395
+47020,"Victoria, TX",0.30242467
+46140,"Tulsa, OK",0.30215
+44420,"Staunton-Stuarts Draft, VA",0.30185416
+41540,"Salisbury, MD",0.30134046
+16620,"Charleston, WV",0.3006579
+12620,"Bangor, ME",0.300342
+27340,"Jacksonville, NC",0.30018884
+23900,"Gettysburg, PA",0.2998203
+42540,"Scranton--Wilkes-Barre, PA",0.29961988
+30980,"Longview, TX",0.29907003
+31860,"Mankato, MN",0.2988982
+16020,"Cape Girardeau, MO-IL",0.29757217
+34620,"Muncie, IN",0.29710355
+46540,"Utica-Rome, NY",0.29708588
+31340,"Lynchburg, VA",0.29675084
+45460,"Terre Haute, IN",0.2964522
+45820,"Topeka, KS",0.29540068
+26580,"Huntington-Ashland, WV-KY-OH",0.29457557
+46660,"Valdosta, GA",0.2936021
+27780,"Johnstown, PA",0.29212222
+22520,"Florence-Muscle Shoals, AL",0.29111588
+10180,"Abilene, TX",0.28970325
+11020,"Altoona, PA",0.28879008
+25980,"Hinesville, GA",0.28784978
+21420,"Enid, OK",0.28610137
+34060,"Morgantown, WV",0.28208235
+26380,"Houma-Bayou Cane-Thibodaux, LA",0.27826318
+24020,"Glens Falls, NY",0.27277243
