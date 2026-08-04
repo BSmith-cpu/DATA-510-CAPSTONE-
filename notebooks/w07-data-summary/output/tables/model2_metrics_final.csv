@@ -1,2 +1,2 @@
-model,cities,features,accuracy,precision,recall,f1,roc_auc
-Model 2 (generalization/scoring),"Austin, Boise","hpi_yoy_lag, pop_velocity_lag, pop_acceleration_lag",0.7878787878787878,0.7142857142857143,0.5,0.5882352941176471,0.7130434782608697
+model,cities,features,threshold,accuracy,precision,recall,f1,roc_auc
+Model 2 (generalization/scoring),"Austin, Boise","hpi_yoy_lag, pop_velocity_lag, pop_acceleration_lag",0.48,0.7575757575757576,0.625,0.5,0.5555555555555556,0.8
