@@ -1,5 +1,5 @@
 feature,mean_abs_shap
 price_to_income_5yr_chg,1.0828474
-affordability_momentum,0.70249563
+three-year_home_price_growth_trend,0.70249563
 hpi_yoy_lag,0.58828133
 zhvi_qoq_lag,0.13756956
