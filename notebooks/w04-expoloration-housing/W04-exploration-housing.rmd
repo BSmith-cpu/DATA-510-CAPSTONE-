@@ -16,19 +16,19 @@ library(zoo)
 ```
 
 Loading in Datasets
-We are loading in three core datasets that form the foundation of this analysis: 
+We are loading in three core datasets that form the foundation of this analysis:
 * Zillow Home Value Index (ZHVI)
 * Home Price Index (HPI) - Purchase Only
 * Home Price Index (HPI) - All Transactions
 ```{r}
-zhvi = read.csv("/Users/brandonsmith/DATA-510-CAPSTONE--1/data/Metro_zhvi_uc_sfrcondo_tier_0.33_0.67_sm_sa_month.csv") # nolint
+zhvi = read.csv("../../data/Metro_zhvi_uc_sfrcondo_tier_0.33_0.67_sm_sa_month.csv") # nolint
 
 hpi_po <- read.csv(
-  "/Users/brandonsmith/DATA-510-CAPSTONE--2/data/hpi_po_metro.csv"
+  "../../data/hpi_po_metro.csv"
 )
 
 hpi_at <- read.csv(
-  "/Users/brandonsmith/DATA-510-CAPSTONE--2/data/hpi_at_metro.csv",
+  "../../data/hpi_at_metro.csv",
   header    = FALSE,
   col.names = c("metro_name", "cbsa", "yr", "qtr", "index_nsa", "index_sa")
 ) %>%
@@ -48,9 +48,9 @@ glimpse(zhvi)
 glimpse(hpi_at)
 glimpse(hpi_po)
 ```
-Both the All Transaction and Purchase Only look ok, there are some basic things i might need to go in and change like headers, and removing empty rows
+Both the All Transactions and Purchase Only tables look fine; there are some basic cleanup steps still needed, like standardizing headers and removing empty rows.
 
-We have an issue when the ZHVI dataset. They decided to put the dates as columns making this a bit harder to analysis and to create a proper EDA. I will be converting this into a long formatted table through R library functions.
+The ZHVI dataset has an issue: dates are stored as columns, which makes it harder to analyze and to build a proper EDA. We convert it into a long-formatted table below.
 
 Wide to Long Format Conversion
 
@@ -72,7 +72,7 @@ zhvi_long <- zhvi %>%
   )
 ```
 
-We are converted the ZHVI dataset from wide to long format, which will make it easier to work with for analysis and visualization.
+We converted the ZHVI dataset from wide to long format, which makes it easier to work with for analysis and visualization.
 
 ```{r}
 glimpse(zhvi_long)
@@ -111,7 +111,7 @@ glimpse(zhvi_qtr)
 
 Training Cities
 
-We are isolating the three training cities - Austin, Boise, and Tampa. The model will learn the pre-collapse signture of these cities.
+We isolate the three training cities - Austin, Boise, and Tampa. The model will learn the pre-collapse signature of these cities.
 ```{r}
 zhvi_train <- zhvi_qtr %>%
   filter(
@@ -182,10 +182,10 @@ Now we are going to be working with CBSA codes to look at specific cities along 
 
 Loading in Census Population Estimates
 
-We loaded in two census beurea CBSA population estimate files covering from 2010 to 2019 and 2020 to 2025. 
+We loaded in two Census Bureau CBSA population estimate files, covering 2010-2019 and 2020-2025.
 ```{r}
-pop_2019 <- read_csv("/Users/brandonsmith/DATA-510-CAPSTONE--2/data/cbsa-est2019-alldata.csv", show_col_types = FALSE) # nolint
-pop_2025 <- read_csv("/Users/brandonsmith/DATA-510-CAPSTONE--2/data/cbsa-est2025-alldata.csv", show_col_types = FALSE) # nolint
+pop_2019 <- read_csv("../../data/cbsa-est2019-alldata.csv", show_col_types = FALSE) # nolint
+pop_2025 <- read_csv("../../data/cbsa-est2025-alldata.csv", show_col_types = FALSE) # nolint
 ```
 
 ```{r}
@@ -193,9 +193,9 @@ glimpse(pop_2019)
 glimpse(pop_2025)
 ```
 
-Cleaning the population data: 
+Cleaning the population data:
 
-the 'clean_pop' function filter to Metropolitation Statisical Areas only (dropping metro division and micropolitan areas). The two files are stacked and deduplicated on CBSA + year
+The `clean_pop` function filters to Metropolitan Statistical Areas only (dropping metro divisions and micropolitan areas). The two files are stacked and deduplicated on CBSA + year.
 ```{r}
 clean_pop <- function(df) {
   df %>%
@@ -223,10 +223,10 @@ glimpse(pop_long)
 
 Engineering Features: 
 
-From the annual population series, we will have three main features:
-* pop_yoy_growth - year over year growth rate
-* pop_velocity_3yr - 3 year velocity (current population compared to 3 years ago)
-* pop_accleration - change in growth rate
+From the annual population series, we derive three main features:
+* pop_yoy_growth - year-over-year growth rate
+* pop_velocity_3yr - 3-year velocity (current population compared to 3 years ago)
+* pop_acceleration - change in growth rate
 
 ```{r}
 pop_features <- pop_long %>%
@@ -235,7 +235,7 @@ pop_features <- pop_long %>%
   mutate(
     pop_yoy_growth = population /lag(population) -1, # yoy
     pop_velocity_3yr = (population / lag(population, 3)) - 1, # 3 year velocity
-    pop_accleration = pop_yoy_growth - lag(pop_yoy_growth)
+    pop_acceleration = pop_yoy_growth - lag(pop_yoy_growth)
   ) %>%
   ungroup()
 
@@ -283,7 +283,7 @@ glimpse(pop_quarterly)
 ```
 Four-Source Panel Join:
 
-This took us forever - we are combining all four data sources into a single quarterly panel dataset joined on CBSA code + year + quarter: 
+We combine all four data sources into a single quarterly panel dataset joined on CBSA code + year + quarter:
 * HPI PO and HPI AT joined with full_join to retain all metro_quarter from either source
 * ZHVI quarterly averages attached via left_join
 * Population features broadcast across all four quarters of each year and attached via left_join
@@ -343,10 +343,10 @@ cat(sprintf("Metros surviving full join (2015+): %d\n", nrow(survival)))
 cat(sprintf("%s 60+ metro target met\n", ifelse(nrow(survival) >= 60, "✅", "❌")))
 ```
 
-We got 67 metro which met the criteria for inclusion in the analysis.
+67 metros met the criteria for inclusion in the analysis.
 
 Export merged_full to CSV
 ```{r}
 # Export the merged_full dataframe to CSV
-write.csv(merged_full, "/Users/brandonsmith/DATA-510-CAPSTONE--2/DATA-510-CAPSTONE--3/data/final_data/merged_full.csv", row.names = FALSE)
+write.csv(merged_full, "../../data/final_data/merged_full.csv", row.names = FALSE)
 ```

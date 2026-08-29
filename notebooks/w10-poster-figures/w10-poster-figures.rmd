@@ -1,16 +1,17 @@
 ---
-title: "Capstone Visualizations - model Performance & Risk Rankings"
+title: "Capstone Visualizations - Model Performance & Risk Rankings"
 author: "Brandon Smith"
-date: "'r Sys.Date()'"
+date: "`r Sys.Date()`"
 output: html_document
 ---
-```
-```
 
+Static ggplot2 versions of the poster figures: the top-15 risk ranking, model 1 vs. model 2 metrics, tuning impact, and the price-to-income time series with collapse flags. Figures are saved into `../w07-data-summary/output/figures/`, alongside the SHAP/risk-ranking figures produced by that notebook.
+
+Ranking, metric, and tuning values below are pinned to match the reported results in the write-up and poster (see the corresponding notes in `w07-data-summary.ipynb`).
 
 ```{r}
 dir.create(
-  "/Users/brandonsmith/DATA-510-CAPSTONE--2/DATA-510-CAPSTONE--3/notebooks/w07-data-summary/output/figures",
+  "../w07-data-summary/output/figures",
   recursive = TRUE,
   showWarnings = FALSE
 )
@@ -33,7 +34,7 @@ ggplot(top15, aes(x = risk_score, y = metro)) +
   labs(title = "Top 15 Highest-Risk Metros", x = "Risk Score", y = NULL) +
   theme_minimal()
 
-ggsave("/Users/brandonsmith/DATA-510-CAPSTONE--2/DATA-510-CAPSTONE--3/notebooks/w07-data-summary/output/figures/top15_risk_metros.png", width = 8, height = 6)
+ggsave("../w07-data-summary/output/figures/top15_risk_metros.png", width = 8, height = 6)
 ```
 
 ```{r model-metrics} 
@@ -49,7 +50,7 @@ ggplot(metrics_df, aes(x = Metric, y = Value, fill = Model)) +
   labs(title = "Model 1 vs Model 2 Metrics", x = NULL, y = "Score") +
   theme_minimal()
 
-ggsave("/Users/brandonsmith/DATA-510-CAPSTONE--2/DATA-510-CAPSTONE--3/notebooks/w07-data-summary/output/figures/model_metrics_comparison.png", width = 8, height = 5)
+ggsave("../w07-data-summary/output/figures/model_metrics_comparison.png", width = 8, height = 5)
 ```
 
 
@@ -64,7 +65,7 @@ ggplot(tuning_df, aes(x = Metric, y = Value, fill = Stage)) +
   geom_col(position = "dodge") +
   labs(title = "Tuning Impact on Model 2", x = NULL, y = "Score") +
   theme_minimal()
-ggsave("/Users/brandonsmith/DATA-510-CAPSTONE--2/DATA-510-CAPSTONE--3/notebooks/w07-data-summary/output/figures/tuning_before_after.png", width = 7, height = 5)
+ggsave("../w07-data-summary/output/figures/tuning_before_after.png", width = 7, height = 5)
 ```
 
 ```{r}
@@ -73,7 +74,7 @@ library(dplyr)
 library(ggplot2)
 library(lubridate)
 
-df <- read_csv("/Users/brandonsmith/DATA-510-CAPSTONE--2/DATA-510-CAPSTONE--3/data/final_data/price_changes_with_collapse_flags.csv")
+df <- read_csv("../../data/final_data/price_changes_with_collapse_flags.csv")
 
 metros <- c(
   "Austin-Round Rock-San Marcos, TX",

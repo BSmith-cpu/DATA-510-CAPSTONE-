@@ -3,20 +3,20 @@ title: Data Summary
 output: html_document
 author: Brandon Smith
 ---
-Affordability Collapse Definition: 
-We want to make sure that before moving foward with more feature enginnering that we are defining certain variables and was it considered "unaffordable". 
+Affordability Collapse Definition:
+Before moving forward with more feature engineering, we define exactly what counts as "unaffordable." The three conditions below were an early, multi-condition candidate definition explored in this notebook; the definition actually used in the final feature set is the simpler `price_to_income_ratio > 5.0` rule built in the last chunk of this file (see the note above that chunk).
 
-Condition 1: Price Acceleration - 3-year HPI growth exceeds 30%
-Why: This condition captures rapid price increases that may lead to afforadbility issues
-'hpi_3yr_growth' >= 0.30
+Condition 1: Price acceleration - 3-year HPI growth exceeds 30%
+Why: captures rapid price increases that may lead to affordability issues.
+`hpi_3yr_growth >= 0.30`
 
 Condition 2: Sustained momentum - YoY ZHVI growth exceeds 10% for 3+ consecutive quarters
-Why: This condition caputres sustained price growth that could indicated a consistent trend of rising price, which raises concern for afforadbility.
-'zhvi_yoy' >= 0.10 # for 3+ quarters in a row
+Why: captures a sustained trend of rising prices, which raises affordability concerns.
+`zhvi_yoy >= 0.10` for 3+ quarters in a row
 
-Condition 3: Affordability burden - median home prices exceeds 5x the median household income
-Why: This condition captures the relationship between home prices and income, which is a key factor in afforadbility.
-'price_to_income_ratio' >= 5.0
+Condition 3: Affordability burden - median home price exceeds 5x median household income
+Why: captures the relationship between home prices and income, a key affordability factor.
+`price_to_income_ratio >= 5.0`
 
 Price Changes Over 1, 3, and 5 Years:
 
@@ -24,17 +24,20 @@ Price Changes Over 1, 3, and 5 Years:
 library(tidyverse)
 library(tidycensus)
 
-merged_full <- read.csv("/Users/brandonsmith/DATA-510-CAPSTONE--2/data/final_data/merged_full.csv")
+merged_full <- read.csv("../../data/final_data/merged_full.csv")
 ```
 
 ```{r}
-census_api_key("1f51e488b2abfe690f3f5785503381c598f5bb36", install = TRUE, overwrite = TRUE)
+# Reads from the CENSUS_API_KEY environment variable rather than hardcoding a
+# key in the notebook. Set it once with Sys.setenv(CENSUS_API_KEY = "...") or
+# in your .Renviron -- get a free key at https://api.census.gov/data/key_signup.html
+census_api_key(Sys.getenv("CENSUS_API_KEY"), install = TRUE, overwrite = TRUE)
 
 years <- 2010:2024
 ```
 
 ```{r}
-zhvi_raw <- read.csv("/Users/brandonsmith/DATA-510-CAPSTONE--2/DATA-510-CAPSTONE--1/data/zhvi_raw.csv")
+zhvi_raw <- read.csv("../../data/zhvi_raw.csv")
 
 zhvi_long <- zhvi_raw %>%
   pivot_longer(
@@ -98,7 +101,7 @@ training_cbsas <- c(
 
 write_csv(
   merged_full,
-  "/Users/brandonsmith/DATA-510-CAPSTONE--2/data/final_data/merged_full_fixed.csv"
+  "../../data/final_data/merged_full_fixed.csv"
 )
 ```
 
@@ -125,7 +128,7 @@ income_clean <- income_by_year %>%
     income_moe = moe
   )
 
-write_csv(income_clean, "/Users/brandonsmith/DATA-510-CAPSTONE--2/data/final_data/income_clean.csv")
+write_csv(income_clean, "../../data/final_data/income_clean.csv")
 ```
 
 ```{r}
@@ -313,23 +316,24 @@ price_changes %>%
   ggplot(aes(x = date, y = metro)) + 
   geom_line(aes(group = metro), color = "grey80", size = 6) + 
   geom_point(
-    date = . %>% filter(collapse_onset),
+    data = . %>% filter(collapse_onset),
     color = "red",
     size = 4
-  ) + 
+  ) +
   labs(
-    title = "Affrodability Collapse Onset by Metro", 
+    title = "Affordability Collapse Onset by Metro",
     x = NULL,
     y = NULL
   ) + theme_minimal()
 
   ```
 
+Final target and feature definition:
+
+This is the pipeline actually used downstream (in `w07-data-summary.ipynb`'s feature engineering and modeling). It supersedes the multi-condition `collapse_onset_raw` definition explored above with a single, simpler rule: a metro is "unaffordable" once its price-to-income ratio exceeds 5.0, and `collapse_onset` marks the first quarter that happens.
 
   ```{r}
 library(tidyverse)
-
-
 
 merged_full <- merged_full %>%
   mutate(cbsa = case_when(
@@ -360,5 +364,5 @@ merged_full <- merged_full %>%
   ) %>%
   ungroup()
 
-write_csv(merged_full, "/Users/brandonsmith/DATA-510-CAPSTONE--2/DATA-510-CAPSTONE--2/data/final_data/price_changes_with_collapse_flags.csv")
+write_csv(merged_full, "../../data/final_data/price_changes_with_collapse_flags.csv")
   ```
