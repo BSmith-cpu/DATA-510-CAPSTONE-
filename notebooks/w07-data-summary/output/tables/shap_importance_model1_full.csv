@@ -1,0 +1,11 @@
+feature,mean_abs_shap
+price_to_income_lag,3.1985707
+zhvi_qoq_lag,0.39168504
+three-year_home_price_growth_trend,0.3266959
+price_to_income_5yr_chg,0.18951148
+hpi_yoy_lag,0.17709477
+hpi_3yr_chg_lag,0.07008113
+zhvi_yoy_lag,0.05537843
+zori_yoy_lag,0.036377918
+pop_acceleration_lag,0.0063022906
+pop_velocity_lag,0.0

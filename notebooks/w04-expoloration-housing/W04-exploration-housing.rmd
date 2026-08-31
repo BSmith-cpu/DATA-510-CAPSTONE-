@@ -21,7 +21,7 @@ We are loading in three core datasets that form the foundation of this analysis:
 * Home Price Index (HPI) - Purchase Only
 * Home Price Index (HPI) - All Transactions
 ```{r}
-zhvi = read.csv("../../data/Metro_zhvi_uc_sfrcondo_tier_0.33_0.67_sm_sa_month.csv") # nolint
+zhvi = read.csv("../../data/zhvi_raw.csv") # nolint
 
 hpi_po <- read.csv(
   "../../data/hpi_po_metro.csv"
@@ -195,20 +195,22 @@ glimpse(pop_2025)
 
 Cleaning the population data:
 
-The `clean_pop` function filters to Metropolitan Statistical Areas only (dropping metro divisions and micropolitan areas). The two files are stacked and deduplicated on CBSA + year.
+The `clean_pop` function filters to Metropolitan Statistical Areas and Metropolitan Divisions (dropping micropolitan areas and counties). The two files are stacked and deduplicated on CBSA + year.
+
+**Coverage note:** FHFA's HPI file reports large multi-division metros (Chicago, New York, Los Angeles, Boston, Detroit, Miami, Philadelphia, San Francisco, Seattle, Washington DC, Tampa, and others) at the *division* level, using the division's own CBSA-like code (e.g. Tampa's `45294` rather than the parent Tampa-St. Petersburg-Clearwater MSA's `45300`). The Census population file stores that division-specific code in a separate `MDIV` column, not `CBSA` -- so the previous version of this function, which only kept `LSAD == "Metropolitan Statistical Area"` rows and used `CBSA`, silently dropped population data for every one of these 37 division-coded metros (confirmed by cross-checking `merged_full.csv`'s CBSA codes against the population files' `MDIV` column). Using `MDIV` as the effective id for division rows recovers all 37.
 ```{r}
 clean_pop <- function(df) {
   df %>%
-    filter(LSAD == "Metropolitan Statistical Area") %>%
-    select(cbsa = CBSA, metro_name = NAME, # nolint # nolint
-           starts_with("POPESTIMATE")) %>%
+    filter(LSAD %in% c("Metropolitan Statistical Area", "Metropolitan Division")) %>%
+    mutate(cbsa = if_else(LSAD == "Metropolitan Division", MDIV, CBSA)) %>%
+    select(cbsa, metro_name = NAME, starts_with("POPESTIMATE")) %>%
     pivot_longer(
       cols      = starts_with("POPESTIMATE"),
       names_to  = "year",
       values_to = "population"
     ) %>%
-    mutate(year = as.integer(str_extract(year, "\\d{4}"))) %>% 
-    filter(!is.na(year))                                         
+    mutate(year = as.integer(str_extract(year, "\\d{4}"))) %>%
+    filter(!is.na(year))
 }
 
 pop_long <- bind_rows(clean_pop(pop_2019), clean_pop(pop_2025)) %>%
@@ -242,32 +244,94 @@ pop_features <- pop_long %>%
 glimpse(pop_features)
 ```
 
-CBSA and ZHVI crosswalk:
+CBSA and Zillow crosswalk:
 
-Zillow's file uses free-text metro names rather than CBSA codes. We will build a lookup table by matching on the city name portion (before the first comma) from both the Census metro names and Zillow RegionName. 
+Zillow's files (ZHVI, and ZORI below) use free-text metro names like "New York, NY" rather than CBSA codes, while the Census population file's metro names are the full CBSA title, e.g. "New York-Newark-Jersey City, NY-NJ-PA". A naive join on the full name string only matches metros whose Census name happens to equal Zillow's short name verbatim (single-city, single-state metros) -- multi-city or multi-state metros never match.
 
+We match instead on the first city name (before the first comma **and** before the first hyphen, e.g. "Austin-Round Rock-San Marcos, TX" -> "Austin") **and** the first state abbreviation, since first-city name alone isn't unique across states (e.g. multiple "Columbus" or "Portland" metros). This function is reused for both ZHVI and ZORI below.
 ```{r}
 cbsa_crosswalk <- pop_long %>%
   select(cbsa, census_name = metro_name) %>%
   distinct() %>%
-  mutate(name_short = str_remove(census_name, ",.*$")) # Remove state information for easier matching
+  mutate(
+    name_short = str_remove(str_remove(census_name, ",.*$"), "-.*$"),
+    state_key  = str_extract(str_remove(census_name, "^[^,]*, "), "^[A-Z]{2}")
+  )
 
-zhvi_cbsa_lookup <- zhvi_long %>%
-  select(RegionName) %>%
-  distinct() %>%
-  mutate(name_short = str_remove(RegionName, ",.*$")) # Remove state information for easier matching
+# Matches a Zillow long-format table (must have a `RegionName` column, e.g. "New
+# York, NY") to a CBSA code via first-city-name + first-state-abbreviation.
+match_zillow_to_cbsa <- function(zillow_long_df) {
+  lookup <- zillow_long_df %>%
+    select(RegionName) %>%
+    distinct() %>%
+    mutate(
+      name_short = str_remove(str_remove(RegionName, ",.*$"), "-.*$"),
+      state_key  = str_extract(str_remove(RegionName, "^[^,]*, "), "^[A-Z]{2}")
+    ) %>%
+    left_join(
+      cbsa_crosswalk %>% select(cbsa, name_short, state_key),
+      by = c("name_short", "state_key")
+    ) %>%
+    # A handful of name_short + state_key pairs still map to more than one CBSA
+    # (e.g. a metro name that is a prefix of another in the same state); keep
+    # the first deterministically rather than silently duplicating rows.
+    distinct(RegionName, .keep_all = TRUE)
 
-message('ZHVI metros matched to CBSA:', nrow(zhvi_cbsa_lookup)," / ", n_distinct(zhvi_long$RegionName)) # 895/895
+  zillow_long_df %>%
+    left_join(lookup %>% select(RegionName, cbsa), by = "RegionName") %>%
+    mutate(cbsa = suppressWarnings(as.integer(cbsa)))
+}
+
+zhvi_matched <- match_zillow_to_cbsa(zhvi_long)
+message(
+  'ZHVI metros matched to a CBSA code: ',
+  n_distinct(zhvi_matched$RegionName[!is.na(zhvi_matched$cbsa)]),
+  ' / ', n_distinct(zhvi_matched$RegionName)
+)
 ```
 
 ```{r}
 zhvi_quarterly <- zhvi_qtr %>%
-  left_join(cbsa_crosswalk %>% mutate(cbsa = as.integer(cbsa)),
-            by = c("RegionName" = "census_name")) %>%
-  mutate(cbsa = suppressWarnings(as.integer(cbsa))) %>%
+  left_join(zhvi_matched %>% select(RegionName, cbsa) %>% distinct(), by = "RegionName") %>%
   rename(year = yr)
 ```
 
+Adding a rent-affordability signal (ZORI):
+
+The price-to-income target only measures ownership affordability. Zillow's Observed Rent Index (ZORI) is the rental-market equivalent of ZHVI, published in the same wide monthly format -- we reshape and aggregate it the same way, then match it to CBSA with the same `match_zillow_to_cbsa()` crosswalk used for ZHVI above.
+```{r}
+zori_raw <- read.csv("../../data/zori_raw.csv")
+
+zori_long <- zori_raw %>%
+  pivot_longer(
+    cols = starts_with("X"),
+    names_to = "date",
+    values_to = "zori_value"
+  ) %>%
+  mutate(
+    date = str_remove(date, "^X"),
+    date = str_replace_all(date, "\\.", "-"),
+    date = as.Date(date)
+  )
+
+zori_matched <- match_zillow_to_cbsa(zori_long)
+message(
+  'ZORI metros matched to a CBSA code: ',
+  n_distinct(zori_matched$RegionName[!is.na(zori_matched$cbsa)]),
+  ' / ', n_distinct(zori_matched$RegionName)
+)
+```
+
+```{r}
+zori_qtr <- zori_long %>%
+  mutate(yr = year(date), qtr = quarter(date)) %>%
+  group_by(RegionName, yr, qtr) %>%
+  summarise(zori_qtr = mean(zori_value, na.rm = TRUE), .groups = "drop")
+
+zori_quarterly <- zori_qtr %>%
+  left_join(zori_matched %>% select(RegionName, cbsa) %>% distinct(), by = "RegionName") %>%
+  rename(year = yr)
+```
 
 ```{r}
 pop_quarterly <- pop_features %>%
@@ -281,14 +345,15 @@ pop_quarterly <- pop_features %>%
 names(pop_quarterly)
 glimpse(pop_quarterly)
 ```
-Four-Source Panel Join:
+Five-Source Panel Join:
 
-We combine all four data sources into a single quarterly panel dataset joined on CBSA code + year + quarter:
+We combine all five data sources into a single quarterly panel dataset joined on CBSA code + year + quarter:
 * HPI PO and HPI AT joined with full_join to retain all metro_quarter from either source
 * ZHVI quarterly averages attached via left_join
+* ZORI (rent) quarterly averages attached via left_join
 * Population features broadcast across all four quarters of each year and attached via left_join
 
-
+A handful of CBSA codes match more than one Zillow `RegionName` (e.g. a short name that's ambiguous even with the state check); `distinct(cbsa, year, qtr, .keep_all = TRUE)` keeps this join one-row-per-metro-quarter rather than silently duplicating rows.
 ```{r}
 hpi_po_clean <- hpi_po %>%
   rename(year = yr) %>%
@@ -301,7 +366,14 @@ hpi_at_clean <- hpi_at %>%
 
 merged_full <- hpi_at_clean %>%
   full_join(hpi_po_clean, by = c("cbsa", "year", "qtr")) %>%
-  left_join(zhvi_quarterly, by = c("cbsa", "year", "qtr")) %>%
+  left_join(
+    zhvi_quarterly %>% distinct(cbsa, year, qtr, .keep_all = TRUE),
+    by = c("cbsa", "year", "qtr")
+  ) %>%
+  left_join(
+    zori_quarterly %>% distinct(cbsa, year, qtr, .keep_all = TRUE),
+    by = c("cbsa", "year", "qtr")
+  ) %>%
   left_join(pop_quarterly,  by = c("cbsa", "year", "qtr")) %>%
   mutate(
     index_sa = coalesce(hpi_at_sa, hpi_po_sa)

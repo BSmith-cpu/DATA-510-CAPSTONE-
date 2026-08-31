@@ -80,10 +80,15 @@ zhvi_quarterly <- zhvi_long_matched %>%
   group_by(cbsa, RegionName, year, qtr) %>%
   summarise(zhvi_qtr_fixed = mean(zhvi, na.rm = TRUE), .groups = "drop")
 
+# Only the 3 training cities need this corrected zhvi_qtr (the original
+# name-matched zhvi_qtr from merged_full.csv had a known issue for these
+# specific metros). Coalescing onto the existing column -- instead of
+# dropping it and left-joining a table that only has 3 CBSA codes -- keeps
+# the original, broader-coverage zhvi_qtr intact for every other metro.
 merged_full <- merged_full %>%
-  select(-matches("^zhvi_qtr")) %>%
   left_join(zhvi_quarterly, by = c("cbsa", "year", "qtr")) %>%
-  rename(zhvi_qtr = zhvi_qtr_fixed)
+  mutate(zhvi_qtr = coalesce(zhvi_qtr_fixed, zhvi_qtr)) %>%
+  select(-zhvi_qtr_fixed)
 ```
 
 ```{r}
@@ -325,12 +330,13 @@ price_changes %>%
     x = NULL,
     y = NULL
   ) + theme_minimal()
-
-  ```
+```
 
 Final target and feature definition:
 
 This is the pipeline actually used downstream (in `w07-data-summary.ipynb`'s feature engineering and modeling). It supersedes the multi-condition `collapse_onset_raw` definition explored above with a single, simpler rule: a metro is "unaffordable" once its price-to-income ratio exceeds 5.0, and `collapse_onset` marks the first quarter that happens.
+
+**Coverage fix:** this chunk previously re-read a separate `acs_median_income.csv` export that was never committed to the repo, making this notebook impossible to reproduce, and its re-join only reached the 3 training cities. `median_income` is already attached to `merged_full` for every CBSA by the `income_clean` join above (same ACS `B19013_001` pull, all metros, Tampa's `45300` code already remapped to `45294`) -- so this chunk now reuses that column directly instead of depending on a missing file.
 
   ```{r}
 library(tidyverse)
@@ -343,15 +349,6 @@ merged_full <- merged_full %>%
     TRUE ~ cbsa
   ))
 
-acs_income <- read_csv("acs_median_income.csv") %>%
-  mutate(cbsa = if_else(cbsa == 45300, 45294, cbsa))
-
-merged_full <- merged_full %>%
-  left_join(acs_income %>% select(cbsa, year, median_income), by = c("cbsa", "year"))
-
-dupe_cols <- names(merged_full)[str_detect(names(merged_full), "\\.x\\.x|\\.y\\.y|\\.x\\.x\\.x")]
-merged_full <- merged_full %>% select(-any_of(dupe_cols))
-
 merged_full <- merged_full %>%
   arrange(cbsa, year, qtr) %>%
   group_by(cbsa) %>%
@@ -360,7 +357,11 @@ merged_full <- merged_full %>%
     price_to_income_ratio = zhvi_qtr / median_income,
     hpi_3yr_chg = (index_sa / lag(index_sa, 12)) - 1,
     is_unaffordable = price_to_income_ratio > 5.0,
-    collapse_onset = is_unaffordable & !lag(is_unaffordable, default = FALSE)
+    # Some metros (e.g. those with no ACS income match) have price_to_income_ratio
+    # -- and therefore is_unaffordable -- entirely NA for the whole group.
+    # lag(..., default = FALSE) errors on an all-NA logical group in current
+    # dplyr/vctrs; coalesce() after the fact handles it safely instead.
+    collapse_onset = coalesce(is_unaffordable, FALSE) & !coalesce(lag(is_unaffordable), FALSE)
   ) %>%
   ungroup()
 
