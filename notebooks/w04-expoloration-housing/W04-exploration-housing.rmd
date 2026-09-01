@@ -348,6 +348,21 @@ message(
 )
 ```
 
+Adding a local wage signal (BLS QCEW average weekly wage):
+
+Unemployment measures whether people have jobs; QCEW measures what those jobs *pay*. That matters here because the affordability target is a price-to-*income* ratio -- a metro where wages are stagnating while prices climb is under a different kind of pressure than one where both rise together. Employment level is included alongside the wage for context.
+
+Same rationale as the LAUS file for pre-processing outside this notebook: QCEW's bulk distribution is one ~300MB zipped CSV per year covering every county/industry/ownership combination. The one-time extraction pulled only `agglvl_code == 40` rows (the MSA-level, all-industry, all-ownership aggregate -- one row per metro-quarter) for 2016-2025, mapped QCEW's `C####` area codes to CBSA codes (verified zero collisions against this project's CBSA universe), and wrote `data/qcew_wages_metro.csv` (cbsa, year, qtr, qcew_avg_wkly_wage, qcew_employment; 375 CBSAs).
+```{r}
+qcew_wages <- read.csv("../../data/qcew_wages_metro.csv") %>%
+  mutate(cbsa = as.integer(cbsa), year = as.integer(year), qtr = as.integer(qtr))
+
+message(
+  'QCEW wage metros matched to a CBSA code: ',
+  n_distinct(qcew_wages$cbsa)
+)
+```
+
 Adding a housing-supply signal (Zillow for-sale inventory):
 
 Building permits (the originally-planned supply-side source) turned out to be unreachable -- Census restructured that data behind a JS-driven portal and the old bulk-download files are frozen at 2019-2021. Zillow also publishes a for-sale inventory index in the same wide monthly format as ZHVI/ZORI, so it's matched the same way with `match_zillow_to_cbsa()`.
@@ -417,13 +432,14 @@ pop_quarterly <- pop_features %>%
 names(pop_quarterly)
 glimpse(pop_quarterly)
 ```
-Eight-Source Panel Join:
+Nine-Source Panel Join:
 
-We combine all eight data sources into a single quarterly panel dataset joined on CBSA code + year + quarter:
+We combine all nine data sources into a single quarterly panel dataset joined on CBSA code + year + quarter:
 * HPI PO and HPI AT joined with full_join to retain all metro_quarter from either source
 * ZHVI quarterly averages attached via left_join
 * ZORI (rent) quarterly averages attached via left_join
 * BLS unemployment rate attached via left_join
+* BLS QCEW average weekly wage and employment attached via left_join
 * For-sale inventory quarterly averages attached via left_join
 * Population features broadcast across all four quarters of each year and attached via left_join
 * S&P 500 quarterly average attached via left_join on year/qtr only (national, not metro-specific)
@@ -450,6 +466,7 @@ merged_full <- hpi_at_clean %>%
     by = c("cbsa", "year", "qtr")
   ) %>%
   left_join(bls_unemployment, by = c("cbsa", "year", "qtr")) %>%
+  left_join(qcew_wages, by = c("cbsa", "year", "qtr")) %>%
   left_join(
     inventory_quarterly %>% distinct(cbsa, year, qtr, .keep_all = TRUE),
     by = c("cbsa", "year", "qtr")
