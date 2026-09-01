@@ -132,3 +132,66 @@ def test_month_to_quarter():
     assert [month_to_quarter(m) for m in (1, 3, 4, 6, 7, 9, 10, 12)] == [
         1, 1, 2, 2, 3, 3, 4, 4
     ]
+
+
+class TestAnnualInterpolation:
+    """The income sawtooth fix.
+
+    A step-broadcast made price_to_income_ratio drop ~1.9% every Q1 and climb
+    Q2-Q4, purely because ACS income is annual. That artifact was large enough
+    that confirmed onsets never occurred in Q1.
+    """
+
+    @pytest.fixture
+    def annual(self):
+        return pd.DataFrame(
+            {"cbsa": [1, 1, 1], "year": [2020, 2021, 2022],
+             "median_income": [50_000, 60_000, 70_000]}
+        )
+
+    def test_expands_to_four_quarters_per_year(self, annual):
+        from housing_pipeline.cbsa import interpolate_annual_to_quarterly
+        out = interpolate_annual_to_quarterly(annual, "median_income")
+        assert len(out) == 12
+        assert sorted(out["qtr"].unique()) == [1, 2, 3, 4]
+
+    def test_anchor_quarter_keeps_the_reported_annual_value(self, annual):
+        from housing_pipeline.cbsa import interpolate_annual_to_quarterly
+        out = interpolate_annual_to_quarterly(annual, "median_income", anchor_qtr=3)
+        anchored = out[(out["year"] == 2021) & (out["qtr"] == 3)]
+        assert anchored["median_income"].iloc[0] == pytest.approx(60_000)
+
+    def test_values_move_smoothly_instead_of_stepping(self, annual):
+        from housing_pipeline.cbsa import interpolate_annual_to_quarterly
+        out = interpolate_annual_to_quarterly(annual, "median_income")
+        out = out.sort_values(["year", "qtr"])
+        # Between the 2020 and 2021 anchors every quarter should differ.
+        middle = out[(out["year"] == 2021)]["median_income"]
+        assert middle.nunique() > 1, "income still constant within a year"
+
+    def test_no_quarter_to_quarter_jump_larger_than_the_annual_change(self, annual):
+        from housing_pipeline.cbsa import interpolate_annual_to_quarterly
+        out = interpolate_annual_to_quarterly(annual, "median_income")
+        out = out.sort_values(["year", "qtr"])
+        steps = out["median_income"].diff().dropna().abs()
+        # Annual change is 10k over 4 quarters, so no single step should approach it.
+        assert steps.max() < 10_000
+
+    def test_ends_are_held_flat_not_extrapolated(self, annual):
+        from housing_pipeline.cbsa import interpolate_annual_to_quarterly
+        out = interpolate_annual_to_quarterly(annual, "median_income").sort_values(
+            ["year", "qtr"]
+        )
+        # Before the first anchor, income should not fall below the first value.
+        assert out["median_income"].iloc[0] == pytest.approx(50_000)
+        assert out["median_income"].iloc[-1] == pytest.approx(70_000)
+
+    def test_metros_are_interpolated_independently(self):
+        from housing_pipeline.cbsa import interpolate_annual_to_quarterly
+        annual = pd.DataFrame(
+            {"cbsa": [1, 1, 2, 2], "year": [2020, 2021, 2020, 2021],
+             "median_income": [50_000, 60_000, 90_000, 90_000]}
+        )
+        out = interpolate_annual_to_quarterly(annual, "median_income")
+        # Metro 2 is flat, so it must stay flat regardless of metro 1's ramp.
+        assert out[out["cbsa"] == 2]["median_income"].nunique() == 1

@@ -1,3 +1,3 @@
 feature_set,mean_auc,mean_pr_auc
-All 15 features,0.9363545821672314,0.5380252716537428
-Without price-to-income level features (13 left),0.8744229790098899,0.3458367503732565
+All 15 features,0.9145971420357188,0.3699511980714462
+Without price-to-income level features (13 left),0.8489390331868177,0.3129348949274859

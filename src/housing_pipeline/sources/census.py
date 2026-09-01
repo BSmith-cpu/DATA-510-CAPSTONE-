@@ -16,7 +16,7 @@ from pathlib import Path
 import pandas as pd
 
 from ..cache import cache_path, fetch
-from ..cbsa import apply_income_aliases, to_quarterly
+from ..cbsa import apply_income_aliases, interpolate_annual_to_quarterly, to_quarterly
 from ..config import ACS_YEARS, RAW_DIR, USER_AGENT, census_api_key
 from .base import Source
 
@@ -168,4 +168,8 @@ class ACSIncome(Source):
         income = income.dropna(subset=["median_income"])
         income = apply_income_aliases(income)
         income = income.drop_duplicates(subset=["cbsa", "year"], keep="first")
-        return to_quarterly(income[["cbsa", "year", "median_income"]])
+        # Interpolated, not step-broadcast: a step puts a sawtooth into
+        # price_to_income_ratio and made onsets impossible in Q1.
+        return interpolate_annual_to_quarterly(
+            income[["cbsa", "year", "median_income"]], "median_income"
+        )

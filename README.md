@@ -78,6 +78,12 @@ and listing it in the registry. Nothing downstream changes.
 
 Three labels, increasingly strict:
 
+ACS income is annual, so it is **interpolated** across quarters rather than
+step-broadcast. Repeating one figure for four quarters put a sawtooth into
+`price_to_income_ratio` — the model's most important feature — which dropped
+~1.9% every Q1 and climbed Q2–Q4. That artifact suppressed Q1 onsets entirely
+and produced a spurious accuracy dip at exactly a 4-quarter lookahead.
+
 - `is_unaffordable` — price-to-income above 5.0. A persistent *state*. Kept for
   reference only: it changes about 4% of the time year over year, so a "nothing
   changed" baseline beats a trained model on it.
@@ -103,12 +109,24 @@ Grouped cross-validation, cities never split across folds:
 
 | Metric | Value | No-skill baseline |
 |---|---|---|
-| PR-AUC | 0.538 | 0.036 |
-| ROC-AUC | 0.936 | 0.500 |
+| PR-AUC | 0.370 | 0.036 |
+| ROC-AUC | 0.915 | 0.500 |
 
-Trained on 87 metros: 55 with a confirmed collapse event, plus 32 "near-miss"
-metros that reached a 4.5–5.0 ratio without crossing, which serve as hard
-negatives. 259 at-risk metros are scored for the watchlist.
+Walk-forward (temporal) backtest, refitting each quarter on only what was known
+then — the honest number for an early-warning claim:
+
+| Metric | Value | No-skill baseline |
+|---|---|---|
+| PR-AUC | 0.053 | 0.010 |
+| ROC-AUC | 0.866 | 0.500 |
+
+A 20-metro watchlist would have contained **79%** of onsets in the quarter they
+occurred and **71%** one quarter ahead, falling to ~44% at two quarters and
+toward noise beyond three. Useful as a 1–2 quarter lookahead; not longer.
+
+Trained on 84 metros with a confirmed collapse event or a near-miss (a 4.5–5.0
+ratio that never crossed, serving as a hard negative). 262 at-risk metros are
+scored for the watchlist.
 
 ### Reading the watchlist
 
@@ -126,7 +144,7 @@ at 0.31 while the top-scoring metro scored 0.16, so the alert could never fire.
   the deployment prior, anchored to a base rate measured from observed data
   rather than assumed. Correction is monotonic, so it never reorders the list.
 
-Current tiers: 13 Elevated, 39 Watch, 207 Monitor.
+Current tiers: 14 Elevated, 39 Watch, 209 Monitor.
 
 For the full limitations — precision at the operating point, the 1–2 year ACS
 income lag that bounds how early any warning can be, and the fairness review

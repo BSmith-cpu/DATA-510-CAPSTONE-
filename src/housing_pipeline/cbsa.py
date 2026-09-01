@@ -150,9 +150,59 @@ def apply_income_aliases(income: pd.DataFrame) -> pd.DataFrame:
 
 
 def to_quarterly(annual: pd.DataFrame, year_col: str = "year") -> pd.DataFrame:
-    """Broadcast an annual table across all four quarters of each year."""
+    """Broadcast an annual table across all four quarters of each year.
+
+    Appropriate for slow-moving stock measures like population, where a step
+    function is a fair representation. For anything that feeds a *ratio*, prefer
+    `interpolate_annual_to_quarterly` -- see the note there.
+    """
     quarters = pd.DataFrame({"qtr": [1, 2, 3, 4]})
     return annual.merge(quarters, how="cross")
+
+
+def interpolate_annual_to_quarterly(
+    annual: pd.DataFrame,
+    value_col: str,
+    *,
+    group_col: str = "cbsa",
+    year_col: str = "year",
+    anchor_qtr: int = 3,
+) -> pd.DataFrame:
+    """Spread an annual series smoothly across quarters instead of stepping it.
+
+    Repeating one annual figure across four quarters injects an artificial
+    sawtooth into anything derived from it. That is exactly what happened to
+    `price_to_income_ratio`, the model's most important feature: with income held
+    flat inside a year while home values kept moving, the ratio climbed every
+    Q2-Q4 and dropped about 1.9% every Q1 when a new income figure landed. The
+    discontinuity was large enough that confirmed onsets never once occurred in
+    Q1 -- an artifact of the calendar, not of housing markets.
+
+    Each annual value is anchored at `anchor_qtr` (Q3 by default, since an ACS
+    5-year estimate is best read as a mid-period figure) and linearly
+    interpolated between anchors. Ends are held flat rather than extrapolated.
+    """
+    frames = []
+    for key, group in annual.groupby(group_col, sort=False):
+        group = group.sort_values(year_col)
+        years = range(int(group[year_col].min()), int(group[year_col].max()) + 1)
+        grid = pd.DataFrame(
+            [(y, q) for y in years for q in (1, 2, 3, 4)], columns=[year_col, "qtr"]
+        )
+        grid[group_col] = key
+
+        anchors = group[[year_col, value_col]].copy()
+        anchors["qtr"] = anchor_qtr
+
+        merged = grid.merge(anchors, on=[year_col, "qtr"], how="left")
+        merged[value_col] = merged[value_col].interpolate(
+            method="linear", limit_direction="both"
+        )
+        frames.append(merged)
+
+    if not frames:
+        return annual.assign(qtr=pd.Series(dtype=int))
+    return pd.concat(frames, ignore_index=True)
 
 
 def month_to_quarter(month: int) -> int:
