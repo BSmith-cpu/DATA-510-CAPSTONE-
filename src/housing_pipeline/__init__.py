@@ -21,6 +21,14 @@ from .features import (
     feature_coverage,
 )
 from .panel import add_affordability_labels, build_panel, load_panel, save_panel
+from .scoring import (
+    BaseRates,
+    base_rates,
+    build_watchlist,
+    deployment_base_rate,
+    prior_correct,
+    watchlist_summary,
+)
 
 __version__ = "1.0.0"
 
@@ -30,10 +38,16 @@ __all__ = [
     "FEATURES",
     "FEATURE_NAMES",
     "MONOTONE_CONSTRAINTS",
+    "BaseRates",
     "add_affordability_labels",
+    "base_rates",
     "build_features",
     "build_panel",
+    "build_watchlist",
+    "deployment_base_rate",
     "feature_coverage",
+    "prior_correct",
+    "watchlist_summary",
     "load_panel",
     "save_panel",
 ]

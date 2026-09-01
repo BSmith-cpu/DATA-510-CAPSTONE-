@@ -1,10 +1,15 @@
 """Command line interface.
 
-    python -m housing_pipeline build           # fetch, join, label, engineer
-    python -m housing_pipeline build --refresh # ignore cache, re-download
-    python -m housing_pipeline info            # what is in the built panel
-    python -m housing_pipeline sources         # list sources and coverage
+    python -m housing_pipeline build            # fetch, join, label, engineer
+    python -m housing_pipeline build --refresh  # ignore cache, re-download
+    python -m housing_pipeline check            # source freshness, no rebuild
+    python -m housing_pipeline info             # what is in the built panel
+    python -m housing_pipeline sources          # list sources and coverage
     python -m housing_pipeline clear-cache
+
+For a scheduled refresh, `build --fail-on-stale` exits non-zero when a source
+has fallen behind its own release cadence, so a silent upstream outage surfaces
+as a failed job rather than a quietly stale watchlist.
 """
 
 from __future__ import annotations
@@ -17,6 +22,7 @@ import pandas as pd
 
 from .config import FEATURES_PATH, PANEL_PATH, census_api_key
 from .features import build_features, feature_coverage
+from .freshness import check_freshness, compare_builds
 from .panel import build_panel, load_panel, save_panel
 from .sources import SOURCE_NAMES, build_sources
 
@@ -31,6 +37,16 @@ def _configure_logging(verbose: bool) -> None:
 
 def cmd_build(args: argparse.Namespace) -> int:
     skip = set(args.skip or [])
+
+    # Keep the previous build so structural changes can be reported rather than
+    # discovered later by a confused analyst.
+    previous = None
+    if PANEL_PATH.exists():
+        try:
+            previous = pd.read_parquet(PANEL_PATH)
+        except Exception:  # noqa: BLE001 - a corrupt prior build must not block this one
+            previous = None
+
     panel = build_panel(refresh=args.refresh, skip=skip)
 
     print("\nSource coverage")
@@ -58,8 +74,47 @@ def cmd_build(args: argparse.Namespace) -> int:
     for _, row in feature_coverage(features).iterrows():
         print(f"  {row['feature']:<38} {row['metros']:>4} metros  {row['rows']:>7,} rows")
 
+    if previous is not None:
+        diff = compare_builds(previous, panel)
+        changed = diff[diff["change"].fillna(0) != 0]
+        print("\nChange since the previous build")
+        print("-" * 64)
+        if changed.empty:
+            print("  no structural change")
+        else:
+            for _, row in changed.iterrows():
+                pct = "" if pd.isna(row["pct_change"]) else f" ({row['pct_change']:+.1f}%)"
+                print(f"  {row['metric']:<32} {row['previous']:>8} -> {row['current']:>8}"
+                      f"  {row['change']:+}{pct}")
+
+    report = check_freshness(panel)
+    print("\nSource freshness")
+    print("-" * 64)
+    print(report)
+
     print(f"\nWrote {PANEL_PATH}")
     print(f"Wrote {FEATURES_PATH}")
+
+    if report.stale and args.fail_on_stale:
+        print(f"\nFAILED: stale sources: {', '.join(report.stale)}", file=sys.stderr)
+        return 2
+    return 0
+
+
+def cmd_check(args: argparse.Namespace) -> int:
+    """Freshness check against the built panel, for scheduled runs."""
+    try:
+        panel = load_panel()
+    except FileNotFoundError as exc:
+        print(exc, file=sys.stderr)
+        return 1
+
+    report = check_freshness(panel, tolerance_quarters=args.tolerance)
+    print(report)
+    if report.stale:
+        print(f"\nSTALE: {', '.join(report.stale)}", file=sys.stderr)
+        return 2
+    print("\nAll sources within their expected publication lag.")
     return 0
 
 
@@ -124,7 +179,22 @@ def main(argv: list[str] | None = None) -> int:
     build.add_argument(
         "--skip", nargs="*", choices=SOURCE_NAMES, help="skip these sources"
     )
+    build.add_argument(
+        "--fail-on-stale",
+        action="store_true",
+        help="exit non-zero if any source is behind its expected release lag "
+             "(intended for scheduled runs)",
+    )
     build.set_defaults(func=cmd_build)
+
+    check = sub.add_parser(
+        "check", help="report source freshness without rebuilding"
+    )
+    check.add_argument(
+        "--tolerance", type=float, default=2.0,
+        help="quarters of slack beyond a source's expected lag (default: 2)",
+    )
+    check.set_defaults(func=cmd_check)
 
     info = sub.add_parser("info", help="summarize the built panel")
     info.set_defaults(func=cmd_info)

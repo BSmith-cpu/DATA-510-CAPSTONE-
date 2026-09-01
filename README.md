@@ -28,10 +28,12 @@ Other commands:
 | Command | Purpose |
 |---|---|
 | `python -m housing_pipeline sources` | List the nine sources and what each contributes |
+| `python -m housing_pipeline check` | Report source freshness without rebuilding |
 | `python -m housing_pipeline info` | Column-by-column coverage of the built panel |
 | `python -m housing_pipeline build --refresh` | Ignore the cache and re-download |
 | `python -m housing_pipeline build --skip wages` | Build without a slow or unavailable source |
 | `python -m housing_pipeline clear-cache` | Drop cached downloads |
+| `python -m housing_pipeline build --fail-on-stale` | Rebuild, exiting non-zero if a source is behind (for scheduled runs) |
 | `pytest` | Run the test suite |
 
 ## Repo contents
@@ -108,12 +110,28 @@ Trained on 87 metros: 55 with a confirmed collapse event, plus 32 "near-miss"
 metros that reached a 4.5–5.0 ratio without crossing, which serve as hard
 negatives. 259 at-risk metros are scored for the watchlist.
 
-**Read this as a ranking, not a probability.** The training population is
-deliberately enriched with event cities, so absolute scores are calibrated to
-that population rather than the general one. See
-[`deliverables/POST-SUBMISSION-METHODOLOGY-UPDATE.md`](deliverables/POST-SUBMISSION-METHODOLOGY-UPDATE.md)
-for the full limitations, including precision at the operating threshold and the
-1–2 year ACS income lag that bounds how early any warning can be.
+### Reading the watchlist
+
+The model trains on a population roughly **4× denser in events** than the one it
+scores (4.65% vs 1.17%), because confirmed onsets are too sparse to learn from
+otherwise. Uncorrected, that made the output unusable: the tuned threshold sat
+at 0.31 while the top-scoring metro scored 0.16, so the alert could never fire.
+
+`housing_pipeline.scoring` produces two things from the raw model output:
+
+- **`risk_rank` / `risk_percentile` / `risk_tier`** — relative standing among
+  the scored metros. Always valid, because rank ordering is what the grouped
+  cross-validation actually measured. **This is the primary product.**
+- **`risk_probability`** — the raw score shifted from the training prior onto
+  the deployment prior, anchored to a base rate measured from observed data
+  rather than assumed. Correction is monotonic, so it never reorders the list.
+
+Current tiers: 13 Elevated, 39 Watch, 207 Monitor.
+
+For the full limitations — precision at the operating point, the 1–2 year ACS
+income lag that bounds how early any warning can be, and the fairness review
+that has not yet been run — see
+[`deliverables/POST-SUBMISSION-METHODOLOGY-UPDATE.md`](deliverables/POST-SUBMISSION-METHODOLOGY-UPDATE.md).
 
 ## Notebooks
 
