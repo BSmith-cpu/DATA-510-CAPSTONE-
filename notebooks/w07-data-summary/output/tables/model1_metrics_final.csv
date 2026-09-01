@@ -1,2 +1,2 @@
-model,accuracy,precision,recall,f1,roc_auc
-"Model 1 (explanatory, target=is_unaffordable, all features, 20-city training set)",0.9619047619047619,0.9122807017543859,0.9454545454545454,0.9285714285714286,0.9956598240469209
+model,n_training_cities,accuracy,precision,recall,f1,roc_auc,pr_auc,pr_auc_baseline
+"Model 1 (explanatory, target=collapse_onset, at-risk population)",57,0.8074534161490683,0.3170731707317073,0.8125,0.45614035087719296,0.9034482758620689,0.4249332365189563,0.09937888198757763

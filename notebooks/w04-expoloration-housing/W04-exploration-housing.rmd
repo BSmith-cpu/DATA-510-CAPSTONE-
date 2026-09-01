@@ -333,6 +333,78 @@ zori_quarterly <- zori_qtr %>%
   rename(year = yr)
 ```
 
+Adding a local labor-market signal (BLS unemployment rate):
+
+Population growth turned out to have essentially no predictive value once tested against price data (see `w07-data-summary.ipynb`'s SHAP analysis). Local unemployment is a more direct economic-stress channel and, unlike a national indicator (e.g. a stock index), genuinely varies by metro and quarter. BLS's Local Area Unemployment Statistics (LAUS) publishes both Metropolitan Statistical Area and Metropolitan Division series with their own CBSA-equivalent codes -- the same MSA/division split handled for population above -- so both are pulled and combined.
+
+Unlike ZHVI/ZORI, LAUS's raw bulk files (`la.series` for the series-to-area crosswalk, `la.data.60.Metro` for the monthly values) are large, fixed-format BLS time-series files with their own area-code conventions (`MT<state-fips><cbsa>` for MSAs, `DV<state-fips><division>` for divisions) that add nothing to understand about this project's own pipeline -- so that one-time parsing was done outside this notebook, and `data/bls_unemployment_metro.csv` (cbsa, year, qtr, unemployment_rate; sourced from BLS LAUS, unadjusted series, 1990-2026) is committed as an already-clean quarterly input, the same role `zhvi_raw.csv`/`zori_raw.csv` play for Zillow's data.
+```{r}
+bls_unemployment <- read.csv("../../data/bls_unemployment_metro.csv") %>%
+  mutate(cbsa = as.integer(cbsa), year = as.integer(year), qtr = as.integer(qtr))
+
+message(
+  'BLS unemployment metros matched to a CBSA code: ',
+  n_distinct(bls_unemployment$cbsa)
+)
+```
+
+Adding a housing-supply signal (Zillow for-sale inventory):
+
+Building permits (the originally-planned supply-side source) turned out to be unreachable -- Census restructured that data behind a JS-driven portal and the old bulk-download files are frozen at 2019-2021. Zillow also publishes a for-sale inventory index in the same wide monthly format as ZHVI/ZORI, so it's matched the same way with `match_zillow_to_cbsa()`.
+
+**Coverage caveat:** this series only starts **2018-03**, far short of ZHVI/HPI's 2000+ history. Boise's collapse onset (2019Q3) is close enough to that start date that a year-over-year change (needing a full 2 years of prior history once also lagged 4 quarters) would be undefined right at Boise's onset -- so the feature engineered from this in `w07-data-summary.ipynb` uses a quarter-over-quarter change instead of year-over-year, which needs only 5 quarters of lookback and stays within range for all three anchor cities.
+```{r}
+inventory_raw <- read.csv("../../data/zillow_inventory_raw.csv")
+
+inventory_long <- inventory_raw %>%
+  pivot_longer(
+    cols = starts_with("X"),
+    names_to = "date",
+    values_to = "inventory_value"
+  ) %>%
+  mutate(
+    date = str_remove(date, "^X"),
+    date = str_replace_all(date, "\\.", "-"),
+    date = as.Date(date)
+  )
+
+inventory_matched <- match_zillow_to_cbsa(inventory_long)
+message(
+  'Inventory metros matched to a CBSA code: ',
+  n_distinct(inventory_matched$RegionName[!is.na(inventory_matched$cbsa)]),
+  ' / ', n_distinct(inventory_matched$RegionName)
+)
+```
+
+```{r}
+inventory_qtr <- inventory_long %>%
+  mutate(yr = year(date), qtr = quarter(date)) %>%
+  group_by(RegionName, yr, qtr) %>%
+  summarise(inventory_qtr = mean(inventory_value, na.rm = TRUE), .groups = "drop")
+
+inventory_quarterly <- inventory_qtr %>%
+  left_join(inventory_matched %>% select(RegionName, cbsa) %>% distinct(), by = "RegionName") %>%
+  rename(year = yr)
+```
+
+Adding a national macro signal (S&P 500):
+
+Requested despite the same caveat that applied to a national mortgage rate: this is the same value for every metro in a given quarter, so it can't help a model whose job is ranking *relative* risk across cities on its own -- but it's cheap to test honestly rather than assume, the same way every other feature has been. FRED's daily close is averaged to a quarterly level and broadcast to every CBSA via `year`/`qtr` only (no metro matching, since there's nothing metro-specific to match).
+```{r}
+sp500_raw <- read.csv("../../data/sp500_raw.csv")
+
+sp500_quarterly <- sp500_raw %>%
+  mutate(
+    observation_date = as.Date(observation_date),
+    yr = year(observation_date),
+    qtr = quarter(observation_date)
+  ) %>%
+  filter(!is.na(SP500)) %>%
+  group_by(yr, qtr) %>%
+  summarise(sp500_qtr = mean(SP500, na.rm = TRUE), .groups = "drop") %>%
+  rename(year = yr)
+```
+
 ```{r}
 pop_quarterly <- pop_features %>%
   mutate(cbsa = as.integer(cbsa)) %>%
@@ -345,13 +417,16 @@ pop_quarterly <- pop_features %>%
 names(pop_quarterly)
 glimpse(pop_quarterly)
 ```
-Five-Source Panel Join:
+Eight-Source Panel Join:
 
-We combine all five data sources into a single quarterly panel dataset joined on CBSA code + year + quarter:
+We combine all eight data sources into a single quarterly panel dataset joined on CBSA code + year + quarter:
 * HPI PO and HPI AT joined with full_join to retain all metro_quarter from either source
 * ZHVI quarterly averages attached via left_join
 * ZORI (rent) quarterly averages attached via left_join
+* BLS unemployment rate attached via left_join
+* For-sale inventory quarterly averages attached via left_join
 * Population features broadcast across all four quarters of each year and attached via left_join
+* S&P 500 quarterly average attached via left_join on year/qtr only (national, not metro-specific)
 
 A handful of CBSA codes match more than one Zillow `RegionName` (e.g. a short name that's ambiguous even with the state check); `distinct(cbsa, year, qtr, .keep_all = TRUE)` keeps this join one-row-per-metro-quarter rather than silently duplicating rows.
 ```{r}
@@ -374,7 +449,13 @@ merged_full <- hpi_at_clean %>%
     zori_quarterly %>% distinct(cbsa, year, qtr, .keep_all = TRUE),
     by = c("cbsa", "year", "qtr")
   ) %>%
+  left_join(bls_unemployment, by = c("cbsa", "year", "qtr")) %>%
+  left_join(
+    inventory_quarterly %>% distinct(cbsa, year, qtr, .keep_all = TRUE),
+    by = c("cbsa", "year", "qtr")
+  ) %>%
   left_join(pop_quarterly,  by = c("cbsa", "year", "qtr")) %>%
+  left_join(sp500_quarterly, by = c("year", "qtr")) %>%
   mutate(
     index_sa = coalesce(hpi_at_sa, hpi_po_sa)
   )

@@ -1,2 +1,2 @@
-model,n_training_cities,features,threshold,accuracy,precision,recall,f1,roc_auc
-"Model 2 (generalization/scoring, all features, 20-city training set)",20,"price_to_income_lag, price_to_income_5yr_chg, zhvi_yoy_lag, zhvi_qoq_lag, three-year_home_price_growth_trend, hpi_yoy_lag, hpi_3yr_chg_lag, pop_velocity_lag, pop_acceleration_lag, zori_yoy_lag",0.5,0.9523809523809523,0.8571428571428571,0.9818181818181818,0.9152542372881356,0.9960117302052786
+model,n_training_cities,features,threshold,accuracy,precision,recall,f1,roc_auc,pr_auc,pr_auc_baseline
+"Model 2 (generalization/scoring, target=collapse_onset, at-risk population)",57,"price_to_income_lag, price_to_income_5yr_chg, zhvi_yoy_lag, zhvi_qoq_lag, three-year_home_price_growth_trend, hpi_yoy_lag, hpi_3yr_chg_lag, pop_velocity_lag, pop_acceleration_lag, zori_yoy_lag, unemployment_rate_lag, inv_qoq_lag, sp500_yoy_lag",0.56,0.8509316770186336,0.375,0.75,0.5,0.9103448275862069,0.4507360898905017,0.09937888198757763
