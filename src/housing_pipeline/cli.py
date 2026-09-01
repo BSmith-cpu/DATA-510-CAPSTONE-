@@ -3,6 +3,7 @@
     python -m housing_pipeline build            # fetch, join, label, engineer
     python -m housing_pipeline build --refresh  # ignore cache, re-download
     python -m housing_pipeline check            # source freshness, no rebuild
+    python -m housing_pipeline backtest         # walk-forward temporal backtest
     python -m housing_pipeline info             # what is in the built panel
     python -m housing_pipeline sources          # list sources and coverage
     python -m housing_pipeline clear-cache
@@ -21,6 +22,7 @@ import sys
 import pandas as pd
 
 from .config import FEATURES_PATH, PANEL_PATH, census_api_key
+from .backtest import lead_time, lead_time_summary, walk_forward
 from .features import build_features, feature_coverage
 from .freshness import check_freshness, compare_builds
 from .panel import build_panel, load_panel, save_panel
@@ -118,6 +120,46 @@ def cmd_check(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_backtest(args: argparse.Namespace) -> int:
+    """Walk-forward backtest: refit each quarter using only what was known then."""
+    try:
+        panel = load_panel()
+    except FileNotFoundError as exc:
+        print(exc, file=sys.stderr)
+        return 1
+
+    features = build_features(panel)
+    result = walk_forward(
+        features,
+        start=(args.start_year, args.start_qtr),
+        min_train_events=args.min_train_events,
+    )
+
+    if result.predictions.empty:
+        print("No origin quarters could be evaluated.", file=sys.stderr)
+        return 1
+
+    print(result.summary())
+
+    print("\n\nPer-origin (origins containing at least one actual onset)")
+    print("-" * 78)
+    columns = ["origin", "n_train_events", "n_scored", "n_events",
+               "pr_auc", "precision_at_10", "recall_at_20"]
+    print(result.evaluable[columns].to_string(
+        index=False, float_format=lambda v: f"{v:.3f}"))
+
+    summary = lead_time_summary(lead_time(result, horizon=args.horizon))
+    if not summary.empty:
+        print("\n\nLead time: rank held before the onset quarter")
+        print("-" * 78)
+        print(summary.to_string(index=False, float_format=lambda v: f"{v:.3f}"))
+
+    if args.out:
+        result.predictions.to_csv(args.out, index=False)
+        print(f"\nWrote per-metro predictions to {args.out}")
+    return 0
+
+
 def cmd_info(args: argparse.Namespace) -> int:
     try:
         panel = load_panel()
@@ -195,6 +237,23 @@ def main(argv: list[str] | None = None) -> int:
         help="quarters of slack beyond a source's expected lag (default: 2)",
     )
     check.set_defaults(func=cmd_check)
+
+    backtest = sub.add_parser(
+        "backtest",
+        help="walk-forward backtest using only data available at each quarter",
+    )
+    backtest.add_argument("--start-year", type=int, default=2021)
+    backtest.add_argument("--start-qtr", type=int, default=1, choices=[1, 2, 3, 4])
+    backtest.add_argument(
+        "--min-train-events", type=int, default=8,
+        help="skip an origin with fewer confirmed events available to train on",
+    )
+    backtest.add_argument(
+        "--horizon", type=int, default=8,
+        help="how many quarters before onset to trace ranks back",
+    )
+    backtest.add_argument("--out", help="write per-metro predictions to this CSV")
+    backtest.set_defaults(func=cmd_backtest)
 
     info = sub.add_parser("info", help="summarize the built panel")
     info.set_defaults(func=cmd_info)

@@ -12,6 +12,7 @@ Or from the command line:
     python -m housing_pipeline build
 """
 
+from .backtest import lead_time, lead_time_summary, walk_forward
 from .config import AFFORDABILITY_THRESHOLD, FEATURE_LAG_QUARTERS
 from .features import (
     FEATURE_NAMES,
@@ -39,6 +40,9 @@ __all__ = [
     "FEATURE_NAMES",
     "MONOTONE_CONSTRAINTS",
     "BaseRates",
+    "lead_time",
+    "lead_time_summary",
+    "walk_forward",
     "add_affordability_labels",
     "base_rates",
     "build_features",
