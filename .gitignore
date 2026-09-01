@@ -6,8 +6,10 @@ __pycache__/
 .Python
 *.egg-info/
 .eggs/
-build/
-dist/
+# Root-scoped: a bare "build/" would also swallow data/build/, where the
+# committed panel lives.
+/build/
+/dist/
 
 # ---- Jupyter --------------------------------------------------------------
 .ipynb_checkpoints/
@@ -31,15 +33,22 @@ _freeze/
 _site/
 
 # ---- Data -----------------------------------------------------------------
-# Raw, external, and interim data are not committed. Document them in
-# data/README.md instead and keep small, reproducible processed snapshots
-# under data/processed/ if you really need them in git.
+# Raw upstream downloads are cached locally and never committed -- the cache
+# runs to several GB (QCEW alone is ~300MB per year). Anyone can rebuild it:
+#     python -m housing_pipeline build
+data/cache/
+
 data/raw/
 data/external/
 data/interim/
 *.csv.gz
 *.parquet
 *.feather
+
+# The built panel and feature table ARE committed (a few MB as Parquet), so
+# results are reproducible without a network connection or an API key.
+!data/build/panel.parquet
+!data/build/features.parquet
 *.h5
 *.hdf5
 *.pkl

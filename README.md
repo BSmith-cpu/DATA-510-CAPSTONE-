@@ -1,19 +1,124 @@
 # Where Next? Predicting the Next Unaffordable U.S. City
 
-Predicting which affordable, mid-sized U.S. metros are at risk of tipping into a housing affordability crisis, using public housing and economic indicators (Zillow, FHFA HPI, Census ACS, FRED, Census population estimates).
+An early-warning model that ranks U.S. metros by their risk of tipping into a housing affordability crisis, built on nine public data sources.
 
 **Author:** Brandon Smith
+
+## Quick start
+
+```bash
+pip install -e ".[model,dev]"        # install the pipeline
+export CENSUS_API_KEY=...            # free: api.census.gov/data/key_signup.html
+python -m housing_pipeline build     # fetch, join, label, engineer features
+```
+
+That writes `data/build/panel.parquet` and `data/build/features.parquet`. Both
+are committed, so if you only want to work with the data you can skip the build
+entirely:
+
+```python
+from housing_pipeline import load_panel, build_features, FEATURE_NAMES
+
+panel = load_panel()                 # joined + labelled, 410 metros
+frame = build_features(panel)        # + 15 leakage-safe model features
+```
+
+Other commands:
+
+| Command | Purpose |
+|---|---|
+| `python -m housing_pipeline sources` | List the nine sources and what each contributes |
+| `python -m housing_pipeline info` | Column-by-column coverage of the built panel |
+| `python -m housing_pipeline build --refresh` | Ignore the cache and re-download |
+| `python -m housing_pipeline build --skip wages` | Build without a slow or unavailable source |
+| `python -m housing_pipeline clear-cache` | Drop cached downloads |
+| `pytest` | Run the test suite |
 
 ## Repo contents
 
 | Path | Purpose |
 |------|---------|
-| [`notebooks/`](notebooks/) | Exploration, data summary, feature/model, and figure notebooks. |
-| [`data/`](data/) | Raw and merged datasets, plus generated plots. |
-| [`deliverables/`](deliverables/) | Milestone write-ups: proposal, posters, final write-up. |
+| [`src/housing_pipeline/`](src/housing_pipeline/) | The data pipeline: sources, joining, labelling, features |
+| [`tests/`](tests/) | Tests for CBSA matching, leakage safety, and the panel join |
+| [`notebooks/`](notebooks/) | Modeling and reporting notebooks (they consume the pipeline) |
+| [`data/build/`](data/build/) | Built panel and feature table (Parquet, committed) |
+| [`data/cache/`](data/) | Raw upstream downloads — gitignored, rebuilt on demand |
+| [`deliverables/`](deliverables/) | Milestone write-ups and the post-submission methodology note |
 
-## Project summary
+## Data sources
 
-The model ranks U.S. metros by affordability risk, using price-to-income ratio, affordability momentum, and population velocity as key features. Training cities: Tampa, Austin, and Boise. Target definition: price-to-income ratio >= 5.0 sustained over 3+ consecutive years.
+All nine are public. Everything except the ACS pull works without credentials.
 
-See [`deliverables/M15-Final Writeup/writeup.pdf`](deliverables/M15-Final%20Writeup/writeup.pdf) for the full methodology and results.
+| Source | Contributes | Notes |
+|---|---|---|
+| Census Population Estimates | Population, metro names | Also the naming authority for metro matching |
+| FHFA House Price Index | `index_sa` | All-transactions, filled from purchase-only |
+| Census ACS (B19013) | Median household income | Needs `CENSUS_API_KEY`; defines the target |
+| Zillow ZHVI | Home values | |
+| Zillow ZORI | Rents | |
+| Zillow For-Sale Inventory | Housing supply | Starts 2018 |
+| BLS LAUS | Unemployment rate | |
+| BLS QCEW | Wages, employment | ~300MB/year, cached after first fetch |
+| FRED | S&P 500 | The one national series; broadcast to all metros |
+
+## How it works
+
+`build_panel()` loads the population table first — it is both the metro-naming
+authority and the CBSA universe that two other sources need — then loads every
+remaining source and left-joins them onto the FHFA spine. Each source declares
+its own key and value columns, and the join **raises rather than silently
+duplicating rows** if a source's key is not unique.
+
+Adding a tenth source means writing one class in `src/housing_pipeline/sources/`
+and listing it in the registry. Nothing downstream changes.
+
+### The target
+
+Three labels, increasingly strict:
+
+- `is_unaffordable` — price-to-income above 5.0. A persistent *state*. Kept for
+  reference only: it changes about 4% of the time year over year, so a "nothing
+  changed" baseline beats a trained model on it.
+- `collapse_onset` — the first quarter a metro crosses the threshold.
+- **`collapse_onset_confirmed`** — an onset that still holds the next quarter.
+  This is the modeling target. It excludes single-quarter reversions and
+  crossings at the edge of the data window that cannot be verified yet.
+
+### Leakage safety
+
+Every predictor is lagged four quarters, applied *after* any percent-change or
+rolling calculation. `tests/test_features.py` asserts this directly by
+perturbing recent quarters and checking that earlier feature values do not move.
+
+Features also declare whether their direction is knowable. Ten carry a monotonic
+constraint into the model; five (unemployment, inventory, S&P 500, and both
+wage/employment series) are left unconstrained because their sign is genuinely
+arguable.
+
+## Current results
+
+Grouped cross-validation, cities never split across folds:
+
+| Metric | Value | No-skill baseline |
+|---|---|---|
+| PR-AUC | 0.538 | 0.036 |
+| ROC-AUC | 0.936 | 0.500 |
+
+Trained on 87 metros: 55 with a confirmed collapse event, plus 32 "near-miss"
+metros that reached a 4.5–5.0 ratio without crossing, which serve as hard
+negatives. 259 at-risk metros are scored for the watchlist.
+
+**Read this as a ranking, not a probability.** The training population is
+deliberately enriched with event cities, so absolute scores are calibrated to
+that population rather than the general one. See
+[`deliverables/POST-SUBMISSION-METHODOLOGY-UPDATE.md`](deliverables/POST-SUBMISSION-METHODOLOGY-UPDATE.md)
+for the full limitations, including precision at the operating threshold and the
+1–2 year ACS income lag that bounds how early any warning can be.
+
+## Notebooks
+
+- [`notebooks/w04-expoloration-housing/`](notebooks/w04-expoloration-housing/) —
+  original EDA. The R data-assembly logic it contained has been superseded by
+  `housing_pipeline`; the notebook is retained for its exploratory analysis.
+- [`notebooks/w07-data-summary/`](notebooks/w07-data-summary/) — modeling,
+  validation, SHAP, and holdout scoring. Consumes the pipeline directly.
