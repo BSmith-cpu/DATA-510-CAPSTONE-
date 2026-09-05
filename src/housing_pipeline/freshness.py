@@ -36,7 +36,7 @@ CADENCES: dict[str, SourceCadence] = {
     "wages": SourceCadence("qcew_avg_wkly_wage", 1, 3),
     "population": SourceCadence("population", 4, 4),
     "acs_income": SourceCadence("median_income", 4, 8),
-    "sp500": SourceCadence("sp500_qtr", 1 / 3, 1),
+    "market": SourceCadence("market_qtr", 1 / 3, 1),
 }
 
 

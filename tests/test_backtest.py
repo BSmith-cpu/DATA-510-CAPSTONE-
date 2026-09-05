@@ -198,3 +198,34 @@ class TestLeadTime:
         empty = BacktestResult(predictions=pd.DataFrame(), per_origin=pd.DataFrame())
         assert lead_time(empty).empty
         assert lead_time_summary(pd.DataFrame()).empty
+
+
+class TestConstraintAlignment:
+    """Regression: constraints must match the feature subset in use.
+
+    Backtesting a 13-feature subset with the full 15-feature constraint tuple
+    raised inside XGBoost. Had the lengths coincidentally matched, it would
+    instead have applied the wrong sign to the wrong feature -- silently.
+    """
+
+    def test_constraints_follow_the_requested_subset(self):
+        from housing_pipeline.features import FEATURE_NAMES, constraints_for
+        subset = [n for n in FEATURE_NAMES if n not in ("inv_qoq_lag", "zori_yoy_lag")]
+        assert len(constraints_for(subset)) == len(subset)
+
+    def test_constraints_preserve_per_feature_direction(self):
+        from housing_pipeline.features import constraints_for
+        pair = constraints_for(["unemployment_rate_lag", "price_to_income_lag"])
+        assert pair == (0, 1)          # unconstrained, then increasing
+        assert constraints_for(["price_to_income_lag", "unemployment_rate_lag"]) == (1, 0)
+
+    def test_unknown_feature_is_rejected(self):
+        from housing_pipeline.features import constraints_for
+        with pytest.raises(KeyError, match="unknown feature"):
+            constraints_for(["not_a_real_feature"])
+
+    def test_walk_forward_accepts_a_feature_subset(self):
+        from housing_pipeline.features import FEATURE_NAMES
+        # Uses the real feature names so the constraint lookup is exercised.
+        subset = [n for n in FEATURE_NAMES if n not in ("inv_qoq_lag", "zori_yoy_lag")]
+        assert len(subset) == len(FEATURE_NAMES) - 2

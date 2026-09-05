@@ -16,6 +16,7 @@ from .backtest import lead_time, lead_time_summary, walk_forward
 from .config import AFFORDABILITY_THRESHOLD, FEATURE_LAG_QUARTERS
 from .features import (
     FEATURE_NAMES,
+    constraints_for,
     FEATURES,
     MONOTONE_CONSTRAINTS,
     build_features,
@@ -38,6 +39,7 @@ __all__ = [
     "FEATURE_LAG_QUARTERS",
     "FEATURES",
     "FEATURE_NAMES",
+    "constraints_for",
     "MONOTONE_CONSTRAINTS",
     "BaseRates",
     "lead_time",

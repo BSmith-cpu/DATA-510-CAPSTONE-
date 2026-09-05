@@ -35,7 +35,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import average_precision_score, roc_auc_score
 
-from .features import FEATURE_NAMES, MONOTONE_CONSTRAINTS
+from .features import FEATURE_NAMES, constraints_for
 
 TARGET = "collapse_onset_confirmed"
 
@@ -45,26 +45,36 @@ def quarter_index(year, qtr) -> int:
     return np.asarray(year) * 4 + np.asarray(qtr) - 1
 
 
-def default_model_factory(scale_pos_weight: float):
-    """The production model configuration, minus the Optuna search.
+def make_model_factory(feature_names: list[str]):
+    """Build a model factory whose constraints match `feature_names`.
 
-    Tuning inside every backtest fold would be both slow and its own source of
-    look-ahead, so the backtest uses fixed, defensible hyperparameters.
+    Constraints are derived from the feature list actually in use rather than
+    the full production set, so backtesting a subset stays correct.
     """
-    import xgboost as xgb
+    constraints = constraints_for(feature_names)
 
-    return xgb.XGBClassifier(
-        n_estimators=100,
-        max_depth=3,
-        learning_rate=0.05,
-        subsample=0.8,
-        colsample_bytree=0.8,
-        eval_metric="logloss",
-        scale_pos_weight=scale_pos_weight,
-        monotone_constraints=MONOTONE_CONSTRAINTS,
-        random_state=42,
-        n_jobs=-1,
-    )
+    def factory(scale_pos_weight: float):
+        import xgboost as xgb
+
+        return xgb.XGBClassifier(
+            n_estimators=100,
+            max_depth=3,
+            learning_rate=0.05,
+            subsample=0.8,
+            colsample_bytree=0.8,
+            eval_metric="logloss",
+            scale_pos_weight=scale_pos_weight,
+            monotone_constraints=constraints,
+            random_state=42,
+            n_jobs=-1,
+        )
+
+    return factory
+
+
+def default_model_factory(scale_pos_weight: float):
+    """Production configuration over the full feature set."""
+    return make_model_factory(FEATURE_NAMES)(scale_pos_weight)
 
 
 @dataclass
@@ -145,7 +155,7 @@ def walk_forward(
     end: tuple[int, int] | None = None,
     min_train_events: int = 8,
     feature_names: list[str] | None = None,
-    model_factory: Callable[[float], object] = default_model_factory,
+    model_factory: Callable[[float], object] | None = None,
 ) -> BacktestResult:
     """Refit and score quarter by quarter, never using data from after the origin.
 
@@ -156,6 +166,9 @@ def walk_forward(
     forecast.
     """
     feature_names = feature_names or FEATURE_NAMES
+    # Constraints must line up with the columns actually passed to the model.
+    if model_factory is None:
+        model_factory = make_model_factory(feature_names)
 
     at_risk = features[~features["prev_unaffordable"]].dropna(
         subset=feature_names + [TARGET]

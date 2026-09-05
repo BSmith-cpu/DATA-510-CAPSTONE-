@@ -43,7 +43,7 @@ def make_panel(n_quarters: int = 40, n_metros: int = 3) -> pd.DataFrame:
                     "unemployment_rate": 5.0 + np.sin(i / 4),
                     "qcew_avg_wkly_wage": 1000 * (1.008**i),
                     "qcew_employment": 250_000 * (1.003**i),
-                    "sp500_qtr": 2000 * (1.02**i),
+                    "market_qtr": 2000 * (1.02**i),
                 }
             )
     return pd.DataFrame(rows)
@@ -140,7 +140,7 @@ class TestFeatureLeakage:
         recent = tampered.index[-4:]
         for column in ("zhvi_qtr", "zori_qtr", "index_sa", "population",
                        "median_income", "unemployment_rate", "inventory_qtr",
-                       "qcew_avg_wkly_wage", "qcew_employment", "sp500_qtr"):
+                       "qcew_avg_wkly_wage", "qcew_employment", "market_qtr"):
             tampered.loc[recent, column] *= 10
         after = build_features(tampered)
 
@@ -177,7 +177,7 @@ class TestFeatureContract:
 
     def test_ambiguous_direction_features_are_unconstrained(self):
         by_name = {f.name: f.monotonic for f in FEATURES}
-        for name in ("unemployment_rate_lag", "inv_qoq_lag", "sp500_yoy_lag",
+        for name in ("unemployment_rate_lag", "inv_qoq_lag", "market_yoy_lag",
                      "qcew_wage_yoy_lag", "qcew_emp_yoy_lag"):
             assert by_name[name] == 0, f"{name} should not have a sign imposed"
 

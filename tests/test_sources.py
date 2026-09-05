@@ -25,9 +25,9 @@ class TestSourceRegistry:
             assert source.description, f"{name} has no description"
             assert source.value_columns, f"{name} declares no value columns"
 
-    def test_only_sp500_is_national(self):
+    def test_only_the_market_index_is_national(self):
         national = [n for n, s in build_sources().items() if s.national]
-        assert national == ["sp500"]
+        assert national == ["market"]
 
 
 class _FakeSource(Source):
@@ -85,14 +85,14 @@ class TestPanelJoin:
                 "metro_name": ["A", "B"],
             }
         )
-        sp500 = pd.DataFrame({"year": [2020], "qtr": [1], "sp500_qtr": [3000.0]})
+        market = pd.DataFrame({"year": [2020], "qtr": [1], "market_qtr": [3000.0]})
         sources = {
             "hpi": _FakeSource("hpi", hpi, ["index_sa", "metro_name"]),
-            "sp500": _FakeSource("sp500", sp500, ["sp500_qtr"], national=True),
+            "market": _FakeSource("market", market, ["market_qtr"], national=True),
         }
-        joined = _join({"hpi": hpi, "sp500": sp500}, sources)
+        joined = _join({"hpi": hpi, "market": market}, sources)
         assert len(joined) == 2
-        assert joined["sp500_qtr"].tolist() == [3000.0, 3000.0]
+        assert joined["market_qtr"].tolist() == [3000.0, 3000.0]
 
     def test_join_raises_rather_than_silently_duplicating_rows(self):
         hpi = pd.DataFrame(

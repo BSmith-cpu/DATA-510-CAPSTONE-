@@ -116,7 +116,7 @@ class Wages(Source):
     value_columns = ["qcew_avg_wkly_wage", "qcew_employment"]
 
     METRO_AGGREGATION_LEVEL = "40"
-    YEARS = range(2016, 2026)
+    YEARS = range(2010, 2026)
 
     def __init__(self, known_cbsas: set[int] | None = None):
         self._known_cbsas = known_cbsas or set()

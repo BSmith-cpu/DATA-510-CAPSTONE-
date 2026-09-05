@@ -56,13 +56,29 @@ FEATURES: list[Feature] = [
     # More supply should ease prices, but rising inventory can equally signal a
     # market that has already priced people out.
     Feature("inv_qoq_lag", "For-sale inventory, quarter over quarter", 0, "inventory"),
-    Feature("sp500_yoy_lag", "S&P 500 growth, year over year", 0, "sp500"),
+    Feature("market_yoy_lag", "Broad market index growth, year over year", 0, "market"),
     Feature("qcew_wage_yoy_lag", "Local wage growth, year over year", 0, "wages"),
     Feature("qcew_emp_yoy_lag", "Local employment growth, year over year", 0, "wages"),
 ]
 
 FEATURE_NAMES: list[str] = [f.name for f in FEATURES]
 MONOTONE_CONSTRAINTS: tuple[int, ...] = tuple(f.monotonic for f in FEATURES)
+
+_MONOTONIC_BY_NAME: dict[str, int] = {f.name: f.monotonic for f in FEATURES}
+
+
+def constraints_for(feature_names: list[str]) -> tuple[int, ...]:
+    """Monotone constraints matching an arbitrary feature subset, in its order.
+
+    XGBoost requires the constraint tuple to line up with the columns actually
+    passed. Using the full FEATURE_NAMES constraints against a subset raises,
+    and -- worse, if the lengths happened to match -- would silently apply the
+    wrong sign to the wrong feature.
+    """
+    missing = [n for n in feature_names if n not in _MONOTONIC_BY_NAME]
+    if missing:
+        raise KeyError(f"unknown feature(s): {missing}")
+    return tuple(_MONOTONIC_BY_NAME[n] for n in feature_names)
 
 
 def _lagged_change(
@@ -119,7 +135,7 @@ def build_features(panel: pd.DataFrame, lag: int = FEATURE_LAG_QUARTERS) -> pd.D
     # only starts in 2018, and a YoY-then-lag combination needs eight quarters of
     # history, which would leave the earliest onset events undefined.
     frame["inv_qoq_lag"] = _lagged_change(frame, "inventory_qtr", 1, lag)
-    frame["sp500_yoy_lag"] = _lagged_change(frame, "sp500_qtr", 4, lag)
+    frame["market_yoy_lag"] = _lagged_change(frame, "market_qtr", 4, lag)
     frame["qcew_wage_yoy_lag"] = _lagged_change(frame, "qcew_avg_wkly_wage", 4, lag)
     frame["qcew_emp_yoy_lag"] = _lagged_change(frame, "qcew_employment", 4, lag)
 

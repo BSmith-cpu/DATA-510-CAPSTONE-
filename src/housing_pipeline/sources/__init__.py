@@ -12,7 +12,7 @@ from .base import PANEL_KEYS, Source
 from .bls import Unemployment, Wages
 from .census import ACSIncome, Population
 from .fhfa import HousePriceIndex
-from .fred import SP500
+from .fred import MarketIndex
 from .zillow import ZHVI, ZORI, Inventory
 
 __all__ = [
@@ -26,7 +26,7 @@ __all__ = [
     "Inventory",
     "Unemployment",
     "Wages",
-    "SP500",
+    "MarketIndex",
     "build_sources",
     "SOURCE_NAMES",
 ]
@@ -42,7 +42,7 @@ SOURCE_NAMES = [
     "inventory",
     "unemployment",
     "wages",
-    "sp500",
+    "market",
 ]
 
 
@@ -70,5 +70,5 @@ def build_sources(
         "inventory": Inventory(ref),
         "unemployment": Unemployment(),
         "wages": Wages(known_cbsas),
-        "sp500": SP500(),
+        "market": MarketIndex(),
     }
